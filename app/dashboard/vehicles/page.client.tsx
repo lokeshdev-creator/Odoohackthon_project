@@ -138,13 +138,13 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
   const getStatusBadgeClass = (s: string) => {
     switch (s) {
       case "Available":
-        return "bg-emerald-50 text-emerald-700 border-emerald-250 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/30";
+        return "bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-950/20 dark:text-emerald-400 dark:border-emerald-800/30";
       case "On Trip":
-        return "bg-blue-50 text-blue-705 border-blue-250 dark:bg-blue-950/20 dark:text-blue-400 dark:border-blue-800/30";
+        return "bg-sky-50 text-sky-700 border-sky-200 dark:bg-sky-950/20 dark:text-sky-400 dark:border-sky-800/30";
       case "In Shop":
-        return "bg-amber-50 text-amber-705 border-amber-250 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30";
+        return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30";
       case "Retired":
-        return "bg-zinc-100 text-zinc-700 border-zinc-250 dark:bg-zinc-800/20 dark:text-zinc-400 dark:border-zinc-700/30";
+        return "bg-zinc-100 text-zinc-650 border-zinc-200 dark:bg-zinc-800/20 dark:text-zinc-400 dark:border-zinc-700/30";
       default:
         return "bg-zinc-100 text-zinc-700";
     }
@@ -164,7 +164,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
         </div>
         <button
           onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           <Plus className="h-4 w-4" /> Register Vehicle
         </button>
@@ -174,13 +174,13 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
       <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-400" />
+          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-450" />
           <input
             type="text"
             placeholder="Search by reg number, name, or model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-white"
+            className="w-full rounded-lg border border-zinc-205 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
           />
         </div>
 
@@ -189,7 +189,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-750 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             <option value="All">All Statuses</option>
             <option value="Available">Available</option>
@@ -202,7 +202,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-755 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             {vehicleTypes.map((type) => (
               <option key={type} value={type}>
@@ -218,7 +218,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
+              <tr className="border-b border-zinc-200 bg-sky-50/25 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
                 <th className="px-6 py-3.5">Reg Number</th>
                 <th className="px-6 py-3.5">Name / Model</th>
                 <th className="px-6 py-3.5">Type</th>
@@ -239,7 +239,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                 filteredVehicles.map((v) => (
                   <tr
                     key={v._id}
-                    className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors"
+                    className="hover:bg-sky-50/15 dark:hover:bg-zinc-800/30 transition-colors"
                   >
                     <td className="whitespace-nowrap px-6 py-4 font-bold text-zinc-900 dark:text-zinc-100">
                       {v.registrationNumber}
@@ -456,14 +456,14 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-850 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800"
+                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 disabled:opacity-50 transition-all"
                 >
                   {isPending ? "Saving..." : "Save Vehicle"}
                 </button>

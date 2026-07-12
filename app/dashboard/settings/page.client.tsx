@@ -80,7 +80,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
           <div className="grid grid-cols-3 gap-2 py-2">
             <span className="font-medium text-zinc-500">System Role</span>
             <span className="col-span-2 font-mono text-zinc-900 dark:text-zinc-50">
-              <span className="rounded bg-zinc-100 px-2 py-0.5 text-xs font-bold dark:bg-zinc-800">
+              <span className="rounded bg-sky-50 text-sky-700 px-2 py-0.5 text-xs font-bold dark:bg-sky-950/30 dark:text-sky-300">
                 {user.role}
               </span>
             </span>
@@ -100,8 +100,8 @@ export function SettingsClient({ user }: SettingsClientProps) {
             onClick={() => setTheme("light")}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
               theme === "light"
-                ? "border-zinc-900 bg-zinc-50 text-zinc-900 dark:border-zinc-100 dark:bg-zinc-800 dark:text-zinc-50"
-                : "border-zinc-200 bg-white text-zinc-550 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950"
+                ? "border-sky-500 bg-sky-50/50 text-sky-750 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
+                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950"
             }`}
           >
             <Sun className="h-4 w-4" /> Light Mode
@@ -110,8 +110,8 @@ export function SettingsClient({ user }: SettingsClientProps) {
             onClick={() => setTheme("dark")}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
               theme === "dark"
-                ? "border-zinc-100 bg-zinc-800 text-zinc-50 dark:border-zinc-100 dark:bg-zinc-800 dark:text-zinc-50"
-                : "border-zinc-200 bg-white text-zinc-550 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950"
+                ? "border-sky-500 bg-sky-950/30 text-sky-300 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
+                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950"
             }`}
           >
             <Moon className="h-4 w-4" /> Dark Mode

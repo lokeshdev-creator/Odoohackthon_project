@@ -101,7 +101,9 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
       >
         {/* Top Header Logo */}
         <div className="flex h-16 items-center gap-2 border-b border-zinc-200 px-6 dark:border-zinc-800">
-          <ShieldCheck className="h-6 w-6 text-zinc-900 dark:text-zinc-50" />
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-sky-100 text-sky-600 dark:bg-sky-950/50 dark:text-sky-400">
+            <ShieldCheck className="h-5 w-5" />
+          </div>
           <span className="text-lg font-bold font-sans tracking-tight text-zinc-900 dark:text-zinc-50">
             TransitOps
           </span>
@@ -120,11 +122,11 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
                 onClick={onClose}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                   isActive
-                    ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 font-semibold"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-900 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
+                    ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300 font-semibold"
+                    : "text-zinc-600 hover:bg-sky-50/30 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-150"
                 }`}
               >
-                <Icon className="h-4 w-4" />
+                <Icon className={`h-4 w-4 ${isActive ? "text-sky-600 dark:text-sky-400" : "text-zinc-400 dark:text-zinc-500"}`} />
                 {item.name}
               </Link>
             );
@@ -135,7 +137,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
         <div className="border-t border-zinc-200 p-4 dark:border-zinc-800">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-3 rounded-lg px-2 py-1.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-zinc-100 text-zinc-800 font-bold dark:bg-zinc-800 dark:text-zinc-200">
+              <div className="flex h-9 w-9 items-center justify-center rounded-full bg-sky-50 text-sky-700 font-bold dark:bg-sky-950/40 dark:text-sky-300">
                 {user.name ? user.name.slice(0, 2).toUpperCase() : "US"}
               </div>
               <div className="flex flex-col overflow-hidden">

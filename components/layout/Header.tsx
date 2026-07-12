@@ -130,7 +130,7 @@ export function Header({ onMenuClick }: HeaderProps) {
           >
             <Bell className="h-4.5 w-4.5" />
             {unreadCount > 0 && (
-              <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-zinc-950 text-[10px] font-bold text-white ring-2 ring-white dark:bg-white dark:text-zinc-950 dark:ring-zinc-900">
+              <span className="absolute top-1.5 right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-sky-500 text-[10px] font-bold text-white ring-2 ring-white dark:bg-sky-400 dark:text-zinc-950 dark:ring-zinc-900">
                 {unreadCount}
               </span>
             )}
@@ -152,7 +152,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                     <button
                       onClick={handleMarkAllAsRead}
                       disabled={loadingNotifications}
-                      className="flex items-center text-xs font-semibold text-zinc-500 hover:text-zinc-800 dark:hover:text-white"
+                      className="flex items-center text-xs font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-350"
                     >
                       {loadingNotifications ? (
                         <Loader2 className="h-3 w-3 animate-spin mr-1" />
@@ -173,8 +173,8 @@ export function Header({ onMenuClick }: HeaderProps) {
                     notifications.map((n) => (
                       <div
                         key={n._id}
-                        className={`flex flex-col gap-1 px-4 py-2.5 hover:bg-zinc-50 dark:hover:bg-zinc-800/50 ${
-                          !n.read ? "bg-zinc-50/75 dark:bg-zinc-800/20" : ""
+                        className={`flex flex-col gap-1 px-4 py-2.5 hover:bg-sky-50/30 dark:hover:bg-zinc-800/40 ${
+                          !n.read ? "bg-sky-50/10 dark:bg-zinc-800/20" : ""
                         }`}
                       >
                         <div className="flex items-start justify-between">
@@ -184,7 +184,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                           {!n.read && (
                             <button
                               onClick={(e) => handleMarkAsRead(n._id, e)}
-                              className="rounded-full p-0.5 text-zinc-400 hover:bg-zinc-150 hover:text-zinc-650 dark:hover:bg-zinc-700"
+                              className="rounded-full p-0.5 text-zinc-400 hover:bg-sky-50 hover:text-sky-700 dark:hover:bg-zinc-700"
                               title="Mark as read"
                             >
                               <Check className="h-3 w-3" />

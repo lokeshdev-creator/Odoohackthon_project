@@ -98,11 +98,11 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
     return (
       <button
         onClick={() => setIsOpen(true)}
-        className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-1.5 text-xs text-zinc-500 hover:bg-zinc-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-800 sm:w-64"
+        className="flex items-center gap-2 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs text-zinc-500 hover:border-sky-300 hover:bg-sky-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-900 sm:w-64 transition-all"
       >
         <Search className="h-3.5 w-3.5" />
         <span className="hidden sm:inline">Search vehicles, drivers...</span>
-        <span className="ml-auto hidden rounded border border-zinc-200 bg-white px-1.5 py-0.5 text-[10px] text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 sm:inline">
+        <span className="ml-auto hidden rounded border border-zinc-200 bg-zinc-50 px-1.5 py-0.5 text-[10px] text-zinc-400 dark:border-zinc-800 dark:bg-zinc-900 sm:inline">
           Ctrl K
         </span>
       </button>
@@ -123,21 +123,21 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
       >
         {/* Header Search Field */}
         <div className="flex items-center border-b border-zinc-200 px-4 py-3 dark:border-zinc-800">
-          <Search className="h-5 w-5 text-zinc-400" />
+          <Search className="h-5 w-5 text-sky-600 dark:text-sky-400" />
           <input
             ref={inputRef}
             type="text"
             placeholder="Type to search dashboard elements..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="ml-3 flex-1 bg-transparent text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-zinc-50"
+            className="ml-3 flex-1 bg-transparent text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:text-zinc-50 focus:ring-0"
           />
           <button
             onClick={() => {
               setIsOpen(false);
               onClose?.();
             }}
-            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-650 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           >
             <X className="h-4 w-4" />
           </button>
@@ -147,7 +147,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
         <div className="max-h-[350px] overflow-y-auto p-2">
           {loading && (
             <div className="flex items-center justify-center py-8 text-zinc-400">
-              <Loader2 className="h-6 w-6 animate-spin mr-2" />
+              <Loader2 className="h-6 w-6 animate-spin mr-2 text-sky-600" />
               <span className="text-sm font-medium">Searching...</span>
             </div>
           )}
@@ -169,7 +169,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
               {/* Vehicles */}
               {results.vehicles.length > 0 && (
                 <div>
-                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400">
                     Vehicles
                   </h3>
                   <div className="mt-1 space-y-0.5">
@@ -177,9 +177,9 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
                       <button
                         key={v._id}
                         onClick={() => handleSelect("/dashboard/vehicles")}
-                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-sky-50/50 dark:text-zinc-300 dark:hover:bg-zinc-800/40"
                       >
-                        <Truck className="h-4 w-4 text-zinc-400" />
+                        <Truck className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                         <div>
                           <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                             {v.registrationNumber}
@@ -195,7 +195,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
               {/* Drivers */}
               {results.drivers.length > 0 && (
                 <div>
-                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400">
                     Drivers
                   </h3>
                   <div className="mt-1 space-y-0.5">
@@ -203,9 +203,9 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
                       <button
                         key={d._id}
                         onClick={() => handleSelect("/dashboard/drivers")}
-                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-sky-50/50 dark:text-zinc-300 dark:hover:bg-zinc-800/40"
                       >
-                        <User className="h-4 w-4 text-zinc-400" />
+                        <User className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                         <div>
                           <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                             {d.name}
@@ -223,7 +223,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
               {/* Trips */}
               {results.trips.length > 0 && (
                 <div>
-                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400">
                     Trips
                   </h3>
                   <div className="mt-1 space-y-0.5">
@@ -231,9 +231,9 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
                       <button
                         key={t._id}
                         onClick={() => handleSelect("/dashboard/trips")}
-                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-sky-50/50 dark:text-zinc-300 dark:hover:bg-zinc-800/40"
                       >
-                        <MapPin className="h-4 w-4 text-zinc-400" />
+                        <MapPin className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                         <div>
                           <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                             {t.source} &rarr; {t.destination}
@@ -251,7 +251,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
               {/* Expenses */}
               {results.expenses.length > 0 && (
                 <div>
-                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-zinc-400">
+                  <h3 className="px-2 text-xs font-semibold uppercase tracking-wider text-sky-700 dark:text-sky-400">
                     Expenses
                   </h3>
                   <div className="mt-1 space-y-0.5">
@@ -259,9 +259,9 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
                       <button
                         key={e._id}
                         onClick={() => handleSelect("/dashboard/expenses")}
-                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-zinc-100 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                        className="flex w-full items-center gap-3 rounded-lg px-2 py-2 text-left text-sm text-zinc-700 hover:bg-sky-50/50 dark:text-zinc-300 dark:hover:bg-zinc-800/40"
                       >
-                        <DollarSign className="h-4 w-4 text-zinc-400" />
+                        <DollarSign className="h-4 w-4 text-sky-600 dark:text-sky-400" />
                         <div>
                           <div className="font-semibold text-zinc-900 dark:text-zinc-100">
                             ${e.amount.toLocaleString()} - {e.category}

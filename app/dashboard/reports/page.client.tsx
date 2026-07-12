@@ -231,44 +231,44 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             onClick={() => setSelectedReport("utilization")}
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "utilization"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950"
-                : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-850"
+                ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
+                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
-            <Table className="h-4 w-4" /> Fleet Utilization
+            <Table className={`h-4 w-4 ${selectedReport === "utilization" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Fleet Utilization
           </button>
 
           <button
             onClick={() => setSelectedReport("roi")}
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "roi"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950"
-                : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-850"
+                ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
+                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
-            <Table className="h-4 w-4" /> Operational Cost & ROI
+            <Table className={`h-4 w-4 ${selectedReport === "roi" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Operational Cost & ROI
           </button>
 
           <button
             onClick={() => setSelectedReport("efficiency")}
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "efficiency"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950"
-                : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-850"
+                ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
+                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
-            <Table className="h-4 w-4" /> Fuel Efficiency
+            <Table className={`h-4 w-4 ${selectedReport === "efficiency" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Fuel Efficiency
           </button>
 
           <button
             onClick={() => setSelectedReport("maintenance")}
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "maintenance"
-                ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950"
-                : "text-zinc-600 hover:bg-zinc-50 dark:text-zinc-400 dark:hover:bg-zinc-850"
+                ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
+                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
-            <Table className="h-4 w-4" /> Maintenance Summary
+            <Table className={`h-4 w-4 ${selectedReport === "maintenance" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Maintenance Summary
           </button>
         </div>
 
@@ -282,13 +282,13 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             <div className="flex gap-2">
               <button
                 onClick={handleExportCSV}
-                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all"
               >
                 <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Export CSV
               </button>
               <button
                 onClick={handleExportPDF}
-                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800"
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-red-350 hover:bg-red-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all"
               >
                 <FileText className="h-4 w-4 text-red-550 dark:text-red-400" /> Export PDF
               </button>
@@ -300,7 +300,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
+              <tr className="border-b border-zinc-200 bg-sky-50/25 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
                     {headers.map((h) => (
                       <th key={h} className="px-6 py-3.5 whitespace-nowrap">
                         {h}
@@ -319,7 +319,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
                     rows.map((row, idx) => (
                       <tr
                         key={idx}
-                        className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors"
+                        className="hover:bg-sky-50/15 dark:hover:bg-zinc-800/30 transition-colors"
                       >
                         {headers.map((h) => {
                           const val = row[h];

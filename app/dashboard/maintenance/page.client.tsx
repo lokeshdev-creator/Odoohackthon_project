@@ -126,7 +126,7 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
         </div>
         <button
           onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200"
+          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
         >
           <Plus className="h-4 w-4" /> Schedule Service
         </button>
@@ -136,13 +136,13 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
       <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-400" />
+          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-450" />
           <input
             type="text"
             placeholder="Search by vehicle registration, type, description..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-zinc-900 focus:bg-white dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-white"
+            className="w-full rounded-lg border border-zinc-205 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
           />
         </div>
 
@@ -150,7 +150,7 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value)}
-          className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 w-full sm:w-48"
+          className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-750 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 w-full sm:w-48 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
         >
           <option value="All">All Tickets</option>
           <option value="Open">Open (In Shop)</option>
@@ -163,7 +163,7 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="border-b border-zinc-200 bg-zinc-50 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
+              <tr className="border-b border-zinc-200 bg-sky-50/25 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
                 <th className="px-6 py-3.5">Vehicle</th>
                 <th className="px-6 py-3.5">Service Type</th>
                 <th className="px-6 py-3.5">Description</th>
@@ -184,7 +184,7 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
                 filteredLogs.map((log) => (
                   <tr
                     key={log._id}
-                    className="hover:bg-zinc-50/50 dark:hover:bg-zinc-800/30 transition-colors"
+                    className="hover:bg-sky-50/15 dark:hover:bg-zinc-800/30 transition-colors"
                   >
                     <td className="whitespace-nowrap px-6 py-4">
                       {log.vehicleId ? (
@@ -371,14 +371,14 @@ export function MaintenanceClient({ logs, vehicles }: MaintenanceClientProps) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-zinc-50 dark:border-zinc-850 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800"
+                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800 transition-all"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
                   disabled={isPending}
-                  className="flex items-center justify-center gap-2 rounded-lg bg-zinc-950 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 disabled:opacity-50"
+                  className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-semibold text-white hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-sky-500 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 disabled:opacity-50 transition-all"
                 >
                   {isPending ? "Scheduling..." : "Book Ticket"}
                 </button>

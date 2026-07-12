@@ -191,30 +191,39 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       )}
 
       {/* Welcome banner */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-2xl font-bold tracking-tight text-zinc-900 dark:text-zinc-50">
-          Welcome back, {session.user.name}
-        </h1>
-        <p className="text-sm text-zinc-500 dark:text-zinc-400">
-          Here is the active operational health of your fleet today.
-        </p>
+      <div className="relative overflow-hidden rounded-2xl border border-sky-100 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(14,165,233,0.08)] dark:border-sky-950/20 dark:bg-zinc-900/40">
+        <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-sky-200/20 blur-2xl dark:bg-sky-500/10" />
+        <div className="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-blue-200/15 blur-2xl dark:bg-blue-500/5" />
+        <div className="relative z-10 flex flex-col gap-1">
+          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+            Welcome back, {session.user.name}
+          </h1>
+          <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
+            Smart Transport Operations Control Dashboard
+          </p>
+          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
+            Here is the active operational health, fleet utilization, and financial summary of your transport operations today.
+          </p>
+        </div>
       </div>
 
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* KPI 1 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Active Vehicles
             </span>
-            <Truck className="h-5 w-5 text-zinc-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400">
+              <Truck className="h-4.5 w-4.5" />
+            </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
               {activeVehicles}
             </span>
-            <span className="text-xs text-zinc-500">/ {totalActiveFleet} active</span>
+            <span className="text-xs text-zinc-550">/ {totalActiveFleet} active</span>
           </div>
           <div className="mt-2 text-xs text-zinc-500">
             {availableVehicles} available • {vehiclesInMaintenance} in shop
@@ -222,12 +231,14 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         </div>
 
         {/* KPI 2 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Fleet Utilization
             </span>
-            <TrendingUp className="h-5 w-5 text-zinc-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <TrendingUp className="h-4.5 w-4.5" />
+            </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -237,18 +248,20 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               <ArrowUpRight className="h-3 w-3 mr-0.5" /> Optimal
             </span>
           </div>
-          <div className="mt-2 text-xs text-zinc-500">
+          <div className="mt-2 text-xs text-zinc-550">
             {driversOnDuty} drivers currently on duty
           </div>
         </div>
 
         {/* KPI 3 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Fuel Efficiency
             </span>
-            <Fuel className="h-5 w-5 text-zinc-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+              <Fuel className="h-4.5 w-4.5" />
+            </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -256,18 +269,20 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </span>
             <span className="text-xs text-zinc-500">km / Liter</span>
           </div>
-          <div className="mt-2 text-xs text-zinc-500">
+          <div className="mt-2 text-xs text-zinc-550">
             Across {completedTrips.length} completed trips
           </div>
         </div>
 
         {/* KPI 4 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Monthly Expenses
             </span>
-            <DollarSign className="h-5 w-5 text-zinc-400" />
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
+              <DollarSign className="h-4.5 w-4.5" />
+            </div>
           </div>
           <div className="mt-3 flex items-baseline gap-2">
             <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
@@ -275,7 +290,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </span>
             <span className="text-xs text-zinc-500">USD</span>
           </div>
-          <div className="mt-2 text-xs text-zinc-500">
+          <div className="mt-2 text-xs text-zinc-550">
             Total Operational: ${operationalCost.toLocaleString()}
           </div>
         </div>

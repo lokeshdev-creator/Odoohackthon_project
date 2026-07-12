@@ -1,8 +1,8 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f8fafc;
+  --foreground: #0f172a;
 }
 
 @theme inline {
@@ -14,13 +14,68 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --background: #090d16;
+    --foreground: #f8fafc;
   }
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 }
+
+/* Modern styling scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 3px;
+}
+.dark ::-webkit-scrollbar-thumb {
+  background: #334155;
+}
+
+/* Global input focus styles for sky blue secondary theme */
+input[type="text"],
+input[type="number"],
+input[type="email"],
+input[type="password"],
+input[type="date"],
+select,
+textarea {
+  transition: all 0.2s ease-in-out !important;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="date"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #0ea5e9 !important; /* Sky 500 */
+  outline: 2px solid transparent !important;
+  outline-offset: 2px !important;
+  box-shadow: 0 0 0 2px rgba(14, 165, 233, 0.15) !important;
+  background-color: #ffffff !important;
+}
+
+.dark input[type="text"]:focus,
+.dark input[type="number"]:focus,
+.dark input[type="email"]:focus,
+.dark input[type="password"]:focus,
+.dark input[type="date"]:focus,
+.dark select:focus,
+.dark textarea:focus {
+  border-color: #38bdf8 !important; /* Sky 400 */
+  background-color: #090d16 !important;
+  box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15) !important;
+}
+
+
