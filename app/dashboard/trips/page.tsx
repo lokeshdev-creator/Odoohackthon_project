@@ -12,7 +12,7 @@ export default async function TripsPage() {
     redirect("/login");
   }
 
-  const role = session.user.role;
+  const role = (session.user as any).role;
   const email = session.user.email;
 
   await connectToDatabase();

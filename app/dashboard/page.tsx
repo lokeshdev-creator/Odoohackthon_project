@@ -11,6 +11,7 @@ import { AlertCircle, ArrowUpRight, DollarSign, Fuel, ShieldAlert, TrendingUp, T
 import { DashboardCharts } from "@/components/analytics/DashboardCharts";
 import { RegionSelector } from "@/components/analytics/RegionSelector";
 import { DriverCompleteButton } from "@/components/trips/DriverCompleteButton";
+import { DriverFuelModal } from "@/components/trips/DriverFuelModal";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -30,7 +31,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   await connectToDatabase();
 
   const userEmail = session.user.email;
-  const userRole = session.user.role;
+  const userRole = (session.user as any).role;
 
   if (userRole === "Driver") {
     const driverDoc = await Driver.findOne({ email: userEmail }).lean();
@@ -54,10 +55,16 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       .sort({ createdAt: -1 })
       .lean();
 
+    // Fetch vehicles for the fuel log fallback selector
+    const activeVehiclesList = await Vehicle.find({ isDeleted: false })
+      .sort({ name: 1 })
+      .lean();
+
     const activeTrip = assignedTrips.find((t) => ["Draft", "Dispatched"].includes(t.status));
     const completedTripsCount = assignedTrips.filter((t) => t.status === "Completed").length;
 
     const serializedActiveTrip = activeTrip ? JSON.parse(JSON.stringify(activeTrip)) : null;
+    const serializedVehiclesList = JSON.parse(JSON.stringify(activeVehiclesList));
 
     return (
       <div className="space-y-6">
@@ -65,16 +72,21 @@ export default async function DashboardPage({ searchParams }: PageProps) {
         <div className="relative overflow-hidden rounded-2xl border border-sky-100 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(14,165,233,0.08)] dark:border-sky-950/20 dark:bg-zinc-900/40">
           <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-sky-200/20 blur-2xl dark:bg-sky-500/10" />
           <div className="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-blue-200/15 blur-2xl dark:bg-blue-500/5" />
-          <div className="relative z-10 flex flex-col gap-1">
-            <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
-              Hello, {driverDoc.name}!
-            </h1>
-            <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
-              Driver Portal Dashboard • {driverDoc.region || "North"} Region
-            </p>
-            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
-              Manage your assigned trips, update odometer readings and cargo reports directly from your dashboard.
-            </p>
+          <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+            <div className="flex flex-col gap-1">
+              <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+                Hello, {driverDoc.name}!
+              </h1>
+              <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
+                Driver Portal Dashboard • {driverDoc.region || "North"} Region
+              </p>
+              <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
+                Manage your assigned trips, update odometer readings and cargo reports directly from your dashboard.
+              </p>
+            </div>
+            <div className="shrink-0 bg-zinc-50/50 backdrop-blur dark:bg-zinc-950/25 p-1.5 rounded-xl border border-zinc-200/65 dark:border-zinc-800/40">
+              <DriverFuelModal activeTrip={serializedActiveTrip} vehicles={serializedVehiclesList} />
+            </div>
           </div>
         </div>
 
