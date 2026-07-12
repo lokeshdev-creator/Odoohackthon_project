@@ -1,0 +1,57 @@
+{
+  "name": "TransitOps – Smart Transport Operations",
+  "short_name": "TransitOps",
+  "description": "Production-ready fleet registry, driver compliance, trip logs, dispatching, maintenance, and expense analytics dashboard.",
+  "start_url": "/dashboard",
+  "display": "standalone",
+  "background_color": "#090d16",
+  "theme_color": "#0ea5e9",
+  "orientation": "portrait-primary",
+  "scope": "/",
+  "lang": "en",
+  "categories": ["business", "productivity"],
+  "icons": [
+    {
+      "src": "/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "description": "Open the main dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/icon-512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Vehicles",
+      "short_name": "Vehicles",
+      "description": "Manage vehicle fleet",
+      "url": "/dashboard/vehicles",
+      "icons": [{ "src": "/icon-512.png", "sizes": "512x512" }]
+    },
+    {
+      "name": "Trips",
+      "short_name": "Trips",
+      "description": "View and manage trips",
+      "url": "/dashboard/trips",
+      "icons": [{ "src": "/icon-512.png", "sizes": "512x512" }]
+    }
+  ],
+  "screenshots": []
+}
