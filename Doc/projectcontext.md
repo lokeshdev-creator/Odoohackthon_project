@@ -504,38 +504,55 @@ Form Validation
 
 Professional Design
 
-Suggested Tech Stack
+Target Tech Stack
 
 Frontend
 
-React
-Next.js
-TypeScript
-Tailwind CSS
-shadcn/ui
-TanStack Table
-React Hook Form
-Zod
-Recharts
+- Next.js 16/15 (App Router)
+- React 19
+- TypeScript
+- Tailwind CSS v4
+- shadcn/ui
+- Lucide React
+- React Hook Form
+- Zod
+- TanStack Query
+- Recharts
+- Sonner
 
 Backend
 
-Node.js
-Express.js (or Next.js API Routes)
-Prisma ORM
+- Next.js Route Handlers + Server Actions
+- MongoDB Atlas
+- Mongoose (ODM)
 
 Database
 
-PostgreSQL
+- MongoDB Atlas
 
 Authentication
 
-JWT
-bcrypt
+- Auth.js (NextAuth v5)
+- JWT Authentication
+- Credentials Login
+- Role-Based Access Control (RBAC)
 
 Storage
 
-Cloudinary or local storage for documents
+- Cloudinary (for vehicle documents)
+
+Export
+
+- jsPDF
+- PapaParse
+
+Notifications
+
+- Resend Email API
+
+Theme
+
+- Dark & Light Mode (next-themes)
 Bonus Features
 Email reminders for expiring licenses
 Vehicle document management
