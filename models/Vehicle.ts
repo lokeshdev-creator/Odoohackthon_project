@@ -51,6 +51,19 @@ const VehicleSchema = new mongoose.Schema(
       enum: ["Available", "On Trip", "In Shop", "Retired"],
       default: "Available",
     },
+    region: {
+      type: String,
+      required: [true, "Region is required"],
+      enum: ["North", "South", "East", "West", "Central"],
+      default: "North",
+    },
+    documents: [
+      {
+        name: { type: String, required: true },
+        url: { type: String, required: true },
+        uploadedAt: { type: Date, default: Date.now },
+      },
+    ],
     isDeleted: {
       type: Boolean,
       default: false,

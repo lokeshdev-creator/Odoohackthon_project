@@ -47,6 +47,12 @@ const DriverSchema = new mongoose.Schema(
       enum: ["Available", "On Trip", "Off Duty", "Suspended"],
       default: "Available",
     },
+    region: {
+      type: String,
+      required: [true, "Region is required"],
+      enum: ["North", "South", "East", "West", "Central"],
+      default: "North",
+    },
   },
   {
     timestamps: true,

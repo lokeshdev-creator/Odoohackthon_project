@@ -7,8 +7,9 @@ import { Trip } from "@/models/Trip";
 import { Expense } from "@/models/Expense";
 import { MaintenanceLog } from "@/models/MaintenanceLog";
 import { FuelLog } from "@/models/FuelLog";
-import { AlertCircle, ArrowUpRight, DollarSign, Fuel, ShieldAlert, TrendingUp, Truck, Users } from "lucide-react";
+import { AlertCircle, ArrowUpRight, DollarSign, Fuel, ShieldAlert, TrendingUp, Truck, Users, CheckCircle, Wrench, Route } from "lucide-react";
 import { DashboardCharts } from "@/components/analytics/DashboardCharts";
+import { RegionSelector } from "@/components/analytics/RegionSelector";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -22,29 +23,49 @@ export default async function DashboardPage({ searchParams }: PageProps) {
 
   const params = await searchParams;
   const isUnauthorized = params.error === "unauthorized";
+  const selectedRegion = params.region?.toString() || "All";
+  const hasRegion = selectedRegion !== "All";
 
   await connectToDatabase();
 
+  const vehicleQuery: any = { isDeleted: false };
+  const driverQuery: any = {};
+  if (hasRegion) {
+    vehicleQuery.region = selectedRegion;
+    driverQuery.region = selectedRegion;
+  }
+
+  // Fetch vehicles for this region to filter trips/expenses
+  const regionVehicles = await Vehicle.find(vehicleQuery).select("_id").lean();
+  const regionVehicleIds = regionVehicles.map((v) => v._id);
+
+  const tripQuery: any = {};
+  const expenseQuery: any = {};
+  if (hasRegion) {
+    tripQuery.vehicleId = { $in: regionVehicleIds };
+    expenseQuery.vehicleId = { $in: regionVehicleIds };
+  }
+
   // 1. Vehicles Stats
-  const activeVehicles = await Vehicle.countDocuments({ status: "On Trip", isDeleted: false });
-  const availableVehicles = await Vehicle.countDocuments({ status: "Available", isDeleted: false });
-  const vehiclesInMaintenance = await Vehicle.countDocuments({ status: "In Shop", isDeleted: false });
-  const retiredVehicles = await Vehicle.countDocuments({ status: "Retired", isDeleted: false });
+  const activeVehicles = await Vehicle.countDocuments({ ...vehicleQuery, status: "On Trip" });
+  const availableVehicles = await Vehicle.countDocuments({ ...vehicleQuery, status: "Available" });
+  const vehiclesInMaintenance = await Vehicle.countDocuments({ ...vehicleQuery, status: "In Shop" });
+  const retiredVehicles = await Vehicle.countDocuments({ ...vehicleQuery, status: "Retired" });
   const totalActiveFleet = activeVehicles + availableVehicles + vehiclesInMaintenance;
 
   // 2. Drivers Stats
-  const driversOnDuty = await Driver.countDocuments({ status: "On Trip" });
-  const driversAvailable = await Driver.countDocuments({ status: "Available" });
+  const driversOnDuty = await Driver.countDocuments({ ...driverQuery, status: "On Trip" });
+  const driversAvailable = await Driver.countDocuments({ ...driverQuery, status: "Available" });
 
   // 3. Trips Stats
-  const activeTrips = await Trip.countDocuments({ status: "Dispatched" });
-  const pendingTrips = await Trip.countDocuments({ status: "Draft" });
+  const activeTrips = await Trip.countDocuments({ ...tripQuery, status: "Dispatched" });
+  const pendingTrips = await Trip.countDocuments({ ...tripQuery, status: "Draft" });
 
   // 4. Calculations
   const fleetUtilization = totalActiveFleet > 0 ? (activeVehicles / totalActiveFleet) * 100 : 0;
 
   // Fuel Efficiency
-  const completedTrips = await Trip.find({ status: "Completed" }).lean();
+  const completedTrips = await Trip.find({ ...tripQuery, status: "Completed" }).lean();
   let totalDistance = 0;
   let totalFuelConsumed = 0;
   let totalRevenue = 0;
@@ -56,16 +77,16 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const avgFuelEfficiency = totalFuelConsumed > 0 ? totalDistance / totalFuelConsumed : 0;
 
   // Expenses & Operational Cost
-  const allExpenses = await Expense.find({}).lean();
+  const allExpenses = await Expense.find(expenseQuery).lean();
   const operationalCost = allExpenses.reduce((sum, e) => sum + e.amount, 0);
 
   const thirtyDaysAgo = new Date();
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
-  const recentExpenses = await Expense.find({ date: { $gte: thirtyDaysAgo } }).lean();
+  const recentExpenses = await Expense.find({ ...expenseQuery, date: { $gte: thirtyDaysAgo } }).lean();
   const monthlyExpenses = recentExpenses.reduce((sum, e) => sum + e.amount, 0);
 
   // Overall ROI = (Revenue - (Maintenance + Fuel)) / Acquisition Cost
-  const activeVehiclesList = await Vehicle.find({ isDeleted: false }).lean();
+  const activeVehiclesList = await Vehicle.find(vehicleQuery).lean();
   const totalAcqCost = activeVehiclesList.reduce((sum, v) => sum + v.acquisitionCost, 0);
   const totalMaintCost = allExpenses
     .filter((e) => e.category === "Maintenance")
@@ -111,7 +132,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     Jan: 0, Feb: 0, Mar: 0, Apr: 0, May: 0, Jun: 0,
     Jul: 0, Aug: 0, Sep: 0, Oct: 0, Nov: 0, Dec: 0,
   };
-  const allTrips = await Trip.find({}).lean();
+  const allTrips = await Trip.find(tripQuery).lean();
   allTrips.forEach((t) => {
     const month = new Date(t.createdAt).toLocaleDateString([], { month: "short" });
     if (monthlyTripsMap[month] !== undefined) {
@@ -194,104 +215,144 @@ export default async function DashboardPage({ searchParams }: PageProps) {
       <div className="relative overflow-hidden rounded-2xl border border-sky-100 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(14,165,233,0.08)] dark:border-sky-950/20 dark:bg-zinc-900/40">
         <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-sky-200/20 blur-2xl dark:bg-sky-500/10" />
         <div className="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-blue-200/15 blur-2xl dark:bg-blue-500/5" />
-        <div className="relative z-10 flex flex-col gap-1">
-          <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
-            Welcome back, {session.user.name}
-          </h1>
-          <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
-            Smart Transport Operations Control Dashboard
-          </p>
-          <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
-            Here is the active operational health, fleet utilization, and financial summary of your transport operations today.
-          </p>
+        <div className="relative z-10 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
+          <div className="flex flex-col gap-1">
+            <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+              Welcome back, {session.user.name}
+            </h1>
+            <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
+              Smart Transport Operations Control Dashboard {selectedRegion !== "All" && `(${selectedRegion} Region)`}
+            </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
+              Here is the active operational health, fleet utilization, and financial summary of your transport operations today.
+            </p>
+          </div>
+          <div className="shrink-0 bg-zinc-50/50 backdrop-blur dark:bg-zinc-950/25 p-1.5 rounded-xl border border-zinc-200/65 dark:border-zinc-800/40">
+            <RegionSelector />
+          </div>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {/* KPI 1 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+      {/* KPI Cards Grid (7 Cards matching Excalidraw Mockup) */}
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7">
+        {/* Card 1: Active Vehicles */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
               Active Vehicles
             </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400">
-              <Truck className="h-4.5 w-4.5" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400 animate-pulse">
+              <Truck className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
               {activeVehicles}
             </span>
-            <span className="text-xs text-zinc-500">/ {totalActiveFleet} active</span>
-          </div>
-          <div className="mt-2 text-xs text-zinc-500">
-            {availableVehicles} available • {vehiclesInMaintenance} in shop
+            <span className="text-[10px] text-zinc-400">/ {totalActiveFleet} active</span>
           </div>
         </div>
 
-        {/* KPI 2 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+        {/* Card 2: Available Vehicles */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Fleet Utilization
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Available
             </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
-              <TrendingUp className="h-4.5 w-4.5" />
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <CheckCircle className="h-4 w-4" />
             </div>
           </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+          <div className="mt-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
+              {availableVehicles}
+            </span>
+          </div>
+        </div>
+
+        {/* Card 3: Vehicles in Maintenance */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              In Maintenance
+            </span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
+              <Wrench className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
+              {vehiclesInMaintenance}
+            </span>
+          </div>
+        </div>
+
+        {/* Card 4: Active Trips */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Active Trips
+            </span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-sky-50 text-sky-600 dark:bg-sky-950/40 dark:text-sky-400">
+              <Route className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
+              {activeTrips}
+            </span>
+          </div>
+        </div>
+
+        {/* Card 5: Pending Trips */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Pending Trips
+            </span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-indigo-50 text-indigo-600 dark:bg-indigo-950/40 dark:text-indigo-400">
+              <AlertCircle className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
+              {pendingTrips}
+            </span>
+          </div>
+        </div>
+
+        {/* Card 6: Drivers On Duty */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Drivers On Duty
+            </span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-teal-50 text-teal-600 dark:bg-teal-950/40 dark:text-teal-400">
+              <Users className="h-4.5 w-4.5" />
+            </div>
+          </div>
+          <div className="mt-2 flex items-baseline gap-1">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
+              {driversOnDuty}
+            </span>
+            <span className="text-[10px] text-zinc-400">/ {driversAvailable + driversOnDuty} active</span>
+          </div>
+        </div>
+
+        {/* Card 7: Utilization % */}
+        <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+          <div className="flex items-center justify-between">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Fleet Util %
+            </span>
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-emerald-50 text-emerald-600 dark:bg-emerald-950/40 dark:text-emerald-400">
+              <TrendingUp className="h-4 w-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-2xl font-black text-zinc-900 dark:text-zinc-50">
               {Math.round(fleetUtilization)}%
             </span>
-            <span className="flex items-center text-xs font-bold text-emerald-600 dark:text-emerald-400">
-              <ArrowUpRight className="h-3 w-3 mr-0.5" /> Optimal
-            </span>
-          </div>
-          <div className="mt-2 text-xs text-zinc-500">
-            {driversOnDuty} drivers currently on duty
-          </div>
-        </div>
-
-        {/* KPI 3 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Fuel Efficiency
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400">
-              <Fuel className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              {avgFuelEfficiency ? avgFuelEfficiency.toFixed(2) : "0.00"}
-            </span>
-            <span className="text-xs text-zinc-500">km / Liter</span>
-          </div>
-          <div className="mt-2 text-xs text-zinc-500">
-            Across {completedTrips.length} completed trips
-          </div>
-        </div>
-
-        {/* KPI 4 */}
-        <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
-              Monthly Expenses
-            </span>
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-50 text-blue-600 dark:bg-blue-950/40 dark:text-blue-400">
-              <DollarSign className="h-4.5 w-4.5" />
-            </div>
-          </div>
-          <div className="mt-3 flex items-baseline gap-2">
-            <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
-              ${monthlyExpenses.toLocaleString()}
-            </span>
-            <span className="text-xs text-zinc-500">USD</span>
-          </div>
-          <div className="mt-2 text-xs text-zinc-500">
-            Total Operational: ${operationalCost.toLocaleString()}
           </div>
         </div>
       </div>

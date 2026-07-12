@@ -37,7 +37,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
       name: "Dashboard",
       href: "/dashboard",
       icon: LayoutDashboard,
-      roles: ["Admin", "Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"],
+      roles: ["Admin", "Fleet Manager", "Dispatcher", "Driver", "Safety Officer", "Financial Analyst"],
     },
     {
       name: "Vehicles",
@@ -55,7 +55,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
       name: "Trips",
       href: "/dashboard/trips",
       icon: Route,
-      roles: ["Admin", "Fleet Manager", "Dispatcher"],
+      roles: ["Admin", "Fleet Manager", "Dispatcher", "Driver"],
     },
     {
       name: "Maintenance",
@@ -85,7 +85,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
       name: "Settings",
       href: "/dashboard/settings",
       icon: Settings,
-      roles: ["Admin", "Fleet Manager", "Dispatcher", "Safety Officer", "Financial Analyst"],
+      roles: ["Admin", "Fleet Manager", "Dispatcher", "Driver", "Safety Officer", "Financial Analyst"],
     },
   ];
 

@@ -43,6 +43,12 @@ export async function GET() {
       },
       {
         name: "Priya Sharma",
+        email: "driver@transitops.com",
+        password: hashedPassword,
+        role: "Driver",
+      },
+      {
+        name: "Anil Deshmukh",
         email: "dispatcher@transitops.com",
         password: hashedPassword,
         role: "Dispatcher",
@@ -82,6 +88,7 @@ export async function GET() {
         acquisitionCost: 45000,
         purchaseDate: new Date("2024-02-15"),
         status: "Available",
+        region: "West",
       },
       {
         registrationNumber: "DL-3C-AG-1420",
@@ -93,6 +100,7 @@ export async function GET() {
         acquisitionCost: 28000,
         purchaseDate: new Date("2023-09-10"),
         status: "Available",
+        region: "North",
       },
       {
         registrationNumber: "KA-03-MK-7744",
@@ -104,6 +112,7 @@ export async function GET() {
         acquisitionCost: 11000,
         purchaseDate: new Date("2023-12-05"),
         status: "Available",
+        region: "South",
       },
       {
         registrationNumber: "HR-26-CN-5590",
@@ -115,6 +124,7 @@ export async function GET() {
         acquisitionCost: 42000,
         purchaseDate: new Date("2022-05-20"),
         status: "Available",
+        region: "East",
       },
       {
         registrationNumber: "MH-43-XY-1122",
@@ -126,6 +136,7 @@ export async function GET() {
         acquisitionCost: 16000,
         purchaseDate: new Date("2021-08-18"),
         status: "Available",
+        region: "Central",
       },
     ]);
 
@@ -140,6 +151,7 @@ export async function GET() {
         licenseExpiry: getRelativeDate(-500),
         safetyScore: 98,
         status: "Available",
+        region: "West",
       },
       {
         name: "Suresh Prasad",
@@ -150,6 +162,7 @@ export async function GET() {
         licenseExpiry: getRelativeDate(-450),
         safetyScore: 92,
         status: "Available",
+        region: "North",
       },
       {
         name: "Gurpreet Singh",
@@ -160,6 +173,7 @@ export async function GET() {
         licenseExpiry: getRelativeDate(-300),
         safetyScore: 88,
         status: "Available",
+        region: "East",
       },
       {
         name: "Vijay Mhatre",
@@ -170,6 +184,7 @@ export async function GET() {
         licenseExpiry: getRelativeDate(-600),
         safetyScore: 90,
         status: "Available",
+        region: "South",
       },
       {
         name: "Anil Kumble",
@@ -180,6 +195,7 @@ export async function GET() {
         licenseExpiry: getRelativeDate(30), // Expired 30 days ago
         safetyScore: 72,
         status: "Suspended",
+        region: "Central",
       },
     ]);
 

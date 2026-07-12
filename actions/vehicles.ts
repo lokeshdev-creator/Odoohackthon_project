@@ -19,6 +19,7 @@ const VehicleInputSchema = z.object({
   acquisitionCost: z.coerce.number().min(0, "Acquisition cost cannot be negative"),
   purchaseDate: z.string().or(z.date()).transform((val) => new Date(val)),
   status: z.enum(["Available", "On Trip", "In Shop", "Retired"]).default("Available"),
+  region: z.string().min(1, "Region is required").trim(),
 });
 
 export async function saveVehicle(prevState: any, formData: FormData) {
@@ -36,6 +37,7 @@ export async function saveVehicle(prevState: any, formData: FormData) {
       acquisitionCost: formData.get("acquisitionCost")?.toString() || "0",
       purchaseDate: formData.get("purchaseDate")?.toString() || "",
       status: (formData.get("status")?.toString() as any) || "Available",
+      region: formData.get("region")?.toString() || "North",
     };
 
     const validatedFields = VehicleInputSchema.safeParse(rawData);
@@ -89,5 +91,19 @@ export async function deleteVehicle(id: string) {
   } catch (error: any) {
     console.error("deleteVehicle error:", error);
     return { success: false, error: error.message || "Failed to delete vehicle" };
+  }
+}
+
+export async function deleteVehicleDocument(vehicleId: string, docUrl: string) {
+  try {
+    await connectToDatabase();
+    await Vehicle.findByIdAndUpdate(vehicleId, {
+      $pull: { documents: { url: docUrl } },
+    });
+    revalidatePath("/dashboard/vehicles");
+    return { success: true };
+  } catch (error: any) {
+    console.error("deleteVehicleDocument error:", error);
+    return { success: false, error: error.message || "Failed to delete document" };
   }
 }

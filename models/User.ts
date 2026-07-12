@@ -25,6 +25,7 @@ const UserSchema = new mongoose.Schema(
         "Admin",
         "Fleet Manager",
         "Dispatcher",
+        "Driver",
         "Safety Officer",
         "Financial Analyst",
       ],

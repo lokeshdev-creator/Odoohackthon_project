@@ -15,6 +15,7 @@ interface Driver {
   licenseExpiry: string;
   safetyScore: number;
   status: "Available" | "On Trip" | "Off Duty" | "Suspended";
+  region?: string;
 }
 
 interface DriversClientProps {
@@ -27,6 +28,7 @@ export function DriversClient({ drivers }: DriversClientProps) {
   // Search & Filter State
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
+  const [regionFilter, setRegionFilter] = useState("All");
 
   // Modal State
   const [isOpen, setIsOpen] = useState(false);
@@ -42,6 +44,8 @@ export function DriversClient({ drivers }: DriversClientProps) {
   const [licenseExpiry, setLicenseExpiry] = useState("");
   const [safetyScore, setSafetyScore] = useState("100");
   const [status, setStatus] = useState<"Available" | "On Trip" | "Off Duty" | "Suspended">("Available");
+  const [region, setRegion] = useState("North");
+  const [sendingAlerts, setSendingAlerts] = useState(false);
 
   const [formErrors, setFormErrors] = useState<any>({});
 
@@ -52,7 +56,8 @@ export function DriversClient({ drivers }: DriversClientProps) {
       d.licenseNumber.toLowerCase().includes(search.toLowerCase()) ||
       d.email.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "All" || d.status === statusFilter;
-    return matchesSearch && matchesStatus;
+    const matchesRegion = regionFilter === "All" || d.region === regionFilter;
+    return matchesSearch && matchesStatus && matchesRegion;
   });
 
   const handleOpenAdd = () => {
@@ -66,6 +71,7 @@ export function DriversClient({ drivers }: DriversClientProps) {
     setLicenseExpiry(new Date().toISOString().split("T")[0]);
     setSafetyScore("100");
     setStatus("Available");
+    setRegion("North");
     setFormErrors({});
     setIsOpen(true);
   };
@@ -81,8 +87,27 @@ export function DriversClient({ drivers }: DriversClientProps) {
     setLicenseExpiry(new Date(d.licenseExpiry).toISOString().split("T")[0]);
     setSafetyScore(d.safetyScore.toString());
     setStatus(d.status);
+    setRegion(d.region || "North");
     setFormErrors({});
     setIsOpen(true);
+  };
+
+  const handleSendExpiryAlerts = async () => {
+    setSendingAlerts(true);
+    toast.loading("Scanning licenses and sending notifications...", { id: "license-alerts" });
+    try {
+      const { sendLicenseExpiryReminders } = await import("@/actions/drivers");
+      const res = await sendLicenseExpiryReminders();
+      if (res.success) {
+        toast.success(res.message || "License alerts processed!", { id: "license-alerts" });
+      } else {
+        toast.error(res.error || "Failed to process license alerts", { id: "license-alerts" });
+      }
+    } catch (err: any) {
+      toast.error(err.message || "Failed to process alerts", { id: "license-alerts" });
+    } finally {
+      setSendingAlerts(false);
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -99,6 +124,7 @@ export function DriversClient({ drivers }: DriversClientProps) {
     formData.append("licenseExpiry", licenseExpiry);
     formData.append("safetyScore", safetyScore);
     formData.append("status", status);
+    formData.append("region", region);
 
     startTransition(async () => {
       const res = await saveDriver(null, formData);
@@ -186,12 +212,21 @@ export function DriversClient({ drivers }: DriversClientProps) {
             Manage commercial drivers, license credentials compliance, and safety scores.
           </p>
         </div>
-        <button
-          onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
-        >
-          <Plus className="h-4 w-4" /> Add Driver
-        </button>
+        <div className="flex flex-wrap gap-2 sm:justify-end">
+          <button
+            onClick={handleSendExpiryAlerts}
+            disabled={sendingAlerts}
+            className="flex items-center justify-center gap-2 rounded-lg border border-zinc-200 bg-white px-4 py-2.5 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all cursor-pointer focus:outline-none"
+          >
+            Send Expiry Alerts
+          </button>
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <Plus className="h-4 w-4" /> Add Driver
+          </button>
+        </div>
       </div>
 
       {/* Filter Section */}
@@ -220,6 +255,20 @@ export function DriversClient({ drivers }: DriversClientProps) {
           <option value="Off Duty">Off Duty</option>
           <option value="Suspended">Suspended</option>
         </select>
+
+        {/* Region filter */}
+        <select
+          value={regionFilter}
+          onChange={(e) => setRegionFilter(e.target.value)}
+          className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 w-full sm:w-48 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+        >
+          <option value="All">All Regions</option>
+          <option value="North">North</option>
+          <option value="South">South</option>
+          <option value="East">East</option>
+          <option value="West">West</option>
+          <option value="Central">Central</option>
+        </select>
       </div>
 
       {/* Table view */}
@@ -230,6 +279,7 @@ export function DriversClient({ drivers }: DriversClientProps) {
               <tr className="border-b border-zinc-200 bg-sky-50/25 text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:border-zinc-800 dark:bg-zinc-900/50 dark:text-zinc-400">
                 <th className="px-6 py-3.5">Driver Name</th>
                 <th className="px-6 py-3.5">Contact Details</th>
+                <th className="px-6 py-3.5">Region</th>
                 <th className="px-6 py-3.5">License Number</th>
                 <th className="px-6 py-3.5">Category</th>
                 <th className="px-6 py-3.5">License Expiry</th>
@@ -260,6 +310,9 @@ export function DriversClient({ drivers }: DriversClientProps) {
                       <td className="whitespace-nowrap px-6 py-4">
                         <div className="text-zinc-800 dark:text-zinc-200">{d.phone}</div>
                         <div className="text-xs text-zinc-500">{d.email}</div>
+                      </td>
+                      <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
+                        {d.region || "North"}
                       </td>
                       <td className="whitespace-nowrap px-6 py-4 font-mono text-zinc-600 dark:text-zinc-400">
                         {d.licenseNumber}
@@ -360,6 +413,24 @@ export function DriversClient({ drivers }: DriversClientProps) {
                     <option value="On Trip">On Trip</option>
                     <option value="Off Duty">Off Duty</option>
                     <option value="Suspended">Suspended</option>
+                  </select>
+                </div>
+
+                {/* Region */}
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Region
+                  </label>
+                  <select
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
+                  >
+                    <option value="North">North</option>
+                    <option value="South">South</option>
+                    <option value="East">East</option>
+                    <option value="West">West</option>
+                    <option value="Central">Central</option>
                   </select>
                 </div>
 

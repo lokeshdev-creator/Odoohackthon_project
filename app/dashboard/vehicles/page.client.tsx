@@ -16,6 +16,12 @@ interface Vehicle {
   acquisitionCost: number;
   purchaseDate: string;
   status: "Available" | "On Trip" | "In Shop" | "Retired";
+  region?: string;
+  documents?: Array<{
+    name: string;
+    url: string;
+    uploadedAt: string;
+  }>;
 }
 
 interface VehiclesClientProps {
@@ -29,6 +35,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
   const [search, setSearch] = useState("");
   const [statusFilter, setStatusFilter] = useState("All");
   const [typeFilter, setTypeFilter] = useState("All");
+  const [regionFilter, setRegionFilter] = useState("All");
 
   // Modal Form State
   const [isOpen, setIsOpen] = useState(false);
@@ -45,6 +52,8 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
   const [acquisitionCost, setAcquisitionCost] = useState("");
   const [purchaseDate, setPurchaseDate] = useState("");
   const [status, setStatus] = useState<"Available" | "On Trip" | "In Shop" | "Retired">("Available");
+  const [region, setRegion] = useState("North");
+  const [uploadingDoc, setUploadingDoc] = useState(false);
 
   const [formErrors, setFormErrors] = useState<any>({});
 
@@ -56,7 +65,8 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
       v.model.toLowerCase().includes(search.toLowerCase());
     const matchesStatus = statusFilter === "All" || v.status === statusFilter;
     const matchesType = typeFilter === "All" || v.type === typeFilter;
-    return matchesSearch && matchesStatus && matchesType;
+    const matchesRegion = regionFilter === "All" || v.region === regionFilter;
+    return matchesSearch && matchesStatus && matchesType && matchesRegion;
   });
 
   // Extract unique types for type filter
@@ -74,6 +84,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
     setAcquisitionCost("30000");
     setPurchaseDate(new Date().toISOString().split("T")[0]);
     setStatus("Available");
+    setRegion("North");
     setFormErrors({});
     setIsOpen(true);
   };
@@ -90,8 +101,64 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
     setAcquisitionCost(v.acquisitionCost.toString());
     setPurchaseDate(new Date(v.purchaseDate).toISOString().split("T")[0]);
     setStatus(v.status);
+    setRegion(v.region || "North");
     setFormErrors({});
     setIsOpen(true);
+  };
+
+  const handleUploadDocument = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0 || !editingVehicle) return;
+
+    setUploadingDoc(true);
+    const file = files[0];
+    const uploadData = new FormData();
+    uploadData.append("file", file);
+    uploadData.append("vehicleId", editingVehicle._id);
+
+    try {
+      const response = await fetch("/api/upload", {
+        method: "POST",
+        body: uploadData,
+      });
+      const result = await response.json();
+      if (result.success) {
+        toast.success("Document uploaded successfully!");
+        if (editingVehicle.documents) {
+          editingVehicle.documents.push(result.document);
+        } else {
+          editingVehicle.documents = [result.document];
+        }
+        window.location.reload();
+      } else {
+        toast.error(result.error || "Failed to upload document");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "An error occurred during upload");
+    } finally {
+      setUploadingDoc(false);
+    }
+  };
+
+  const handleDeleteDocument = async (docUrl: string) => {
+    if (!editingVehicle) return;
+    if (!confirm("Are you sure you want to delete this document?")) return;
+
+    try {
+      const { deleteVehicleDocument } = await import("@/actions/vehicles");
+      const res = await deleteVehicleDocument(editingVehicle._id, docUrl);
+      if (res.success) {
+        toast.success("Document deleted!");
+        if (editingVehicle.documents) {
+          editingVehicle.documents = editingVehicle.documents.filter(d => d.url !== docUrl);
+        }
+        window.location.reload();
+      } else {
+        toast.error(res.error || "Failed to delete document");
+      }
+    } catch (error: any) {
+      toast.error(error.message || "Failed to delete document");
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -109,6 +176,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
     formData.append("acquisitionCost", acquisitionCost);
     formData.append("purchaseDate", purchaseDate);
     formData.append("status", status);
+    formData.append("region", region);
 
     startTransition(async () => {
       const res = await saveVehicle(null, formData);
@@ -210,6 +278,20 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
               </option>
             ))}
           </select>
+
+          {/* Region filter */}
+          <select
+            value={regionFilter}
+            onChange={(e) => setRegionFilter(e.target.value)}
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+          >
+            <option value="All">All Regions</option>
+            <option value="North">North</option>
+            <option value="South">South</option>
+            <option value="East">East</option>
+            <option value="West">West</option>
+            <option value="Central">Central</option>
+          </select>
         </div>
       </div>
 
@@ -222,6 +304,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                 <th className="px-6 py-3.5">Reg Number</th>
                 <th className="px-6 py-3.5">Name / Model</th>
                 <th className="px-6 py-3.5">Type</th>
+                <th className="px-6 py-3.5">Region</th>
                 <th className="px-6 py-3.5">Capacity (kg)</th>
                 <th className="px-6 py-3.5">Odometer (km)</th>
                 <th className="px-6 py-3.5">Status</th>
@@ -252,6 +335,9 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
                       {v.type}
+                    </td>
+                    <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
+                      {v.region || "North"}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
                       {v.capacity.toLocaleString()}
@@ -347,6 +433,24 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                     <option value="On Trip">On Trip</option>
                     <option value="In Shop">In Shop</option>
                     <option value="Retired">Retired</option>
+                  </select>
+                </div>
+
+                {/* Region */}
+                <div className="col-span-2 sm:col-span-1">
+                  <label className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                    Region
+                  </label>
+                  <select
+                    value={region}
+                    onChange={(e) => setRegion(e.target.value)}
+                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
+                  >
+                    <option value="North">North</option>
+                    <option value="South">South</option>
+                    <option value="East">East</option>
+                    <option value="West">West</option>
+                    <option value="Central">Central</option>
                   </select>
                 </div>
 
@@ -450,6 +554,54 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                     className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                   />
                 </div>
+
+                {/* Documents Upload Section (Only when editing) */}
+                {editingVehicle && (
+                  <div className="col-span-2 border-t border-zinc-100 pt-4 dark:border-zinc-800">
+                    <span className="block text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-2">
+                      Vehicle Documents
+                    </span>
+                    <div className="space-y-2">
+                      {editingVehicle.documents && editingVehicle.documents.length > 0 ? (
+                        <div className="divide-y divide-zinc-100 rounded-lg border border-zinc-100 p-2 dark:divide-zinc-800 dark:border-zinc-800">
+                          {editingVehicle.documents.map((doc, idx) => (
+                            <div key={idx} className="flex items-center justify-between py-1.5 text-xs">
+                              <a
+                                href={doc.url}
+                                target="_blank"
+                                rel="noreferrer"
+                                className="text-sky-600 hover:underline dark:text-sky-400 truncate max-w-[200px]"
+                              >
+                                📄 {doc.name}
+                              </a>
+                              <button
+                                type="button"
+                                onClick={() => handleDeleteDocument(doc.url)}
+                                className="text-red-500 hover:text-red-700 ml-2"
+                              >
+                                Remove
+                              </button>
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-xs text-zinc-400 italic">No documents attached.</p>
+                      )}
+
+                      <div className="mt-2">
+                        <label className="inline-flex cursor-pointer items-center justify-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all">
+                          {uploadingDoc ? "Uploading..." : "Attach Document"}
+                          <input
+                            type="file"
+                            disabled={uploadingDoc}
+                            onChange={handleUploadDocument}
+                            className="hidden"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end gap-3 border-t border-zinc-200 pt-4 dark:border-zinc-800">

@@ -15,6 +15,7 @@ export default function LoginPage() {
   const demoAccounts = [
     { label: "Admin", email: "admin@transitops.com" },
     { label: "Fleet Manager", email: "manager@transitops.com" },
+    { label: "Driver", email: "driver@transitops.com" },
     { label: "Dispatcher", email: "dispatcher@transitops.com" },
     { label: "Safety Officer", email: "safety@transitops.com" },
     { label: "Financial Analyst", email: "finance@transitops.com" },

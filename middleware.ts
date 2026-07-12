@@ -10,6 +10,7 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith("/_next") ||
     pathname.startsWith("/api/auth") ||
     pathname.startsWith("/api/seed") || // Allow seed API for development convenience
+    pathname.startsWith("/api/test-rules") || // Allow test-rules API for rule verification
     pathname === "/login" ||
     pathname === "/" ||
     pathname === "/favicon.ico"
@@ -54,10 +55,10 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/dashboard?error=unauthorized", request.url));
   }
 
-  // Trips Management: Admin, Dispatcher, Fleet Manager
+  // Trips Management: Admin, Dispatcher, Driver, Fleet Manager
   if (
     pathname.startsWith("/dashboard/trips") &&
-    !["Admin", "Dispatcher", "Fleet Manager"].includes(role)
+    !["Admin", "Dispatcher", "Driver", "Fleet Manager"].includes(role)
   ) {
     return NextResponse.redirect(new URL("/dashboard?error=unauthorized", request.url));
   }
