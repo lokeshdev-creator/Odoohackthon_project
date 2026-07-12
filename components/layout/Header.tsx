@@ -109,6 +109,15 @@ export function Header({ onMenuClick }: HeaderProps) {
 
       {/* Right Controls */}
       <div className="flex items-center gap-4">
+        {/* System Secure / Online Badge */}
+        <div className="hidden items-center gap-1.5 rounded-full border border-emerald-100 bg-emerald-50/40 px-2.5 py-1 text-[11px] font-medium text-emerald-700 dark:border-emerald-950/30 dark:bg-emerald-950/20 dark:text-emerald-400 sm:flex">
+          <span className="relative flex h-2 w-2">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+            <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+          </span>
+          System Secure
+        </div>
+
         {/* Command Search */}
         <GlobalSearch />
 
