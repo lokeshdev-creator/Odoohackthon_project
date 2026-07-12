@@ -26,7 +26,7 @@ const TripInputSchema = z.object({
 export async function saveTrip(prevState: any, formData: FormData) {
   try {
     const session = await auth();
-    const role = session?.user?.role;
+    const role = (session?.user as any)?.role;
     if (role === "Driver") {
       return { success: false, errorMessage: "Unauthorized: Drivers cannot create or edit trips." };
     }
@@ -116,7 +116,7 @@ export async function dispatchTrip(tripId: string) {
       return { success: false, error: "Trip not found" };
     }
 
-    const role = session?.user?.role;
+    const role = (session?.user as any)?.role;
     if (role === "Driver") {
       const driverRecord = await Driver.findOne({ email: session?.user?.email }).lean();
       if (!driverRecord || trip.driverId.toString() !== driverRecord._id.toString()) {
@@ -188,7 +188,7 @@ export async function completeTrip(
       return { success: false, error: "Trip not found" };
     }
 
-    const role = session?.user?.role;
+    const role = (session?.user as any)?.role;
     if (role === "Driver") {
       const driverRecord = await Driver.findOne({ email: session?.user?.email }).lean();
       if (!driverRecord || trip.driverId.toString() !== driverRecord._id.toString()) {
@@ -269,7 +269,7 @@ export async function completeTrip(
 export async function cancelTrip(tripId: string) {
   try {
     const session = await auth();
-    const role = session?.user?.role;
+    const role = (session?.user as any)?.role;
     if (role === "Driver") {
       return { success: false, error: "Unauthorized: Drivers cannot cancel trips." };
     }
