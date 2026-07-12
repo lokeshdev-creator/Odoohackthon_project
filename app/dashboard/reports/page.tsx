@@ -15,9 +15,8 @@ export default async function ReportsPage() {
 
   await connectToDatabase();
 
-  // Load all necessary records to build reports
   const vehicles = await Vehicle.find({ isDeleted: false }).lean();
-  const trips = await Trip.find({ status: "Completed" }).populate("vehicleId").lean();
+  const trips = await Trip.find({}).populate("vehicleId").populate("driverId").lean();
   const maintenance = await MaintenanceLog.find({}).populate("vehicleId").lean();
   const expenses = await Expense.find({}).lean();
 

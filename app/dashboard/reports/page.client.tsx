@@ -6,6 +6,13 @@ import Papa from "papaparse";
 import { jsPDF } from "jspdf";
 import { toast } from "sonner";
 
+interface Driver {
+  _id: string;
+  name: string;
+  phone: string;
+  licenseNumber: string;
+}
+
 interface Vehicle {
   _id: string;
   registrationNumber: string;
@@ -20,10 +27,13 @@ interface Trip {
   source: string;
   destination: string;
   vehicleId: Vehicle;
+  driverId?: Driver;
   actualDistance?: number;
   fuelConsumed?: number;
   revenue: number;
   status: string;
+  dispatchDate?: string;
+  completionDate?: string;
 }
 
 interface MaintenanceLog {
@@ -52,7 +62,7 @@ interface ReportsClientProps {
   expenses: Expense[];
 }
 
-type ReportType = "utilization" | "roi" | "efficiency" | "maintenance";
+type ReportType = "utilization" | "roi" | "efficiency" | "maintenance" | "driverHistory";
 
 export function ReportsClient({ vehicles, trips, maintenance, expenses }: ReportsClientProps) {
   const [selectedReport, setSelectedReport] = useState<ReportType>("utilization");
@@ -60,7 +70,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
   // 1. Compile Fleet Utilization Report Data
   const getUtilizationData = () => {
     return vehicles.map((v) => {
-      const completedTripsCount = trips.filter((t) => t.vehicleId?._id === v._id).length;
+      const completedTripsCount = trips.filter((t) => t.status === "Completed" && t.vehicleId?._id === v._id).length;
       return {
         "Registration Number": v.registrationNumber,
         "Vehicle Name": v.name,
@@ -74,7 +84,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
   // 2. Compile ROI Report Data
   const getRoiData = () => {
     return vehicles.map((v) => {
-      const vTrips = trips.filter((t) => t.vehicleId?._id === v._id);
+      const vTrips = trips.filter((t) => t.status === "Completed" && t.vehicleId?._id === v._id);
       const revenue = vTrips.reduce((acc, t) => acc + t.revenue, 0);
 
       const vMaint = expenses.filter((e) => e.vehicleId === v._id && e.category === "Maintenance");
@@ -101,7 +111,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
   // 3. Compile Fuel Efficiency Report Data
   const getFuelData = () => {
     return vehicles.map((v) => {
-      const vTrips = trips.filter((t) => t.vehicleId?._id === v._id);
+      const vTrips = trips.filter((t) => t.status === "Completed" && t.vehicleId?._id === v._id);
       const distance = vTrips.reduce((acc, t) => acc + (t.actualDistance || 0), 0);
       const liters = vTrips.reduce((acc, t) => acc + (t.fuelConsumed || 0), 0);
       const efficiency = liters > 0 ? (distance / liters).toFixed(2) : "0.00";
@@ -128,6 +138,25 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
     }));
   };
 
+  // 5. Compile Driver History Report Data
+  const getDriverHistoryData = () => {
+    const relevantTrips = trips.filter((t) => t.driverId && t.vehicleId && t.status !== "Draft");
+    return relevantTrips.map((t) => {
+      const dispatchStr = t.dispatchDate ? new Date(t.dispatchDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : "-";
+      const completionStr = t.completionDate ? new Date(t.completionDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : (t.status === "Dispatched" ? "On Trip (Ongoing)" : "-");
+
+      return {
+        "Driver Name": t.driverId?.name || "Unknown Driver",
+        "Vehicle": `${t.vehicleId?.name} (${t.vehicleId?.registrationNumber})`,
+        "Route": `${t.source} to ${t.destination}`,
+        "Departure Time": dispatchStr,
+        "Return Time": completionStr,
+        "Fuel Consumed (L)": t.fuelConsumed !== null && t.fuelConsumed !== undefined ? `${t.fuelConsumed} L` : "-",
+        "Status": t.status,
+      };
+    });
+  };
+
   const getReportPayload = (): any[] => {
     switch (selectedReport) {
       case "utilization":
@@ -138,6 +167,8 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
         return getFuelData();
       case "maintenance":
         return getMaintenanceData();
+      case "driverHistory":
+        return getDriverHistoryData();
     }
   };
 
@@ -269,6 +300,17 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             }`}
           >
             <Table className={`h-4 w-4 ${selectedReport === "maintenance" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Maintenance Summary
+          </button>
+
+          <button
+            onClick={() => setSelectedReport("driverHistory")}
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+              selectedReport === "driverHistory"
+                ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
+                : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
+            }`}
+          >
+            <Table className={`h-4 w-4 ${selectedReport === "driverHistory" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Driver History
           </button>
         </div>
 
