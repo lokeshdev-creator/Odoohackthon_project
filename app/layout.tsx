@@ -2,7 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
-import { ServiceWorkerRegistration } from "@/components/ServiceWorkerRegistration";
+import { PWAInstallProvider } from "@/components/PWAInstallProvider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -66,8 +66,11 @@ export default function RootLayout({
       suppressHydrationWarning
     >
       <body className="min-h-full flex flex-col bg-zinc-50 text-zinc-900 dark:bg-zinc-950 dark:text-zinc-50 font-sans theme-transition">
-        <Providers>{children}</Providers>
-        <ServiceWorkerRegistration />
+        {/* PWAInstallProvider must wrap everything so it captures
+            beforeinstallprompt before any page component mounts */}
+        <PWAInstallProvider>
+          <Providers>{children}</Providers>
+        </PWAInstallProvider>
       </body>
     </html>
   );

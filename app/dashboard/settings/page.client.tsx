@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTheme } from "@/components/theme-provider";
+import { usePWAInstall } from "@/components/PWAInstallProvider";
 import {
   Sun,
   Moon,
@@ -23,57 +24,19 @@ interface SettingsClientProps {
   };
 }
 
-// BeforeInstallPromptEvent is not in the standard TS lib yet
-interface BeforeInstallPromptEvent extends Event {
-  prompt: () => Promise<void>;
-  userChoice: Promise<{ outcome: "accepted" | "dismissed" }>;
-}
-
 export function SettingsClient({ user }: SettingsClientProps) {
   const { setTheme, resolvedTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   const [loadingSeed, setLoadingSeed] = useState(false);
-
-  // PWA install state
-  const [installPrompt, setInstallPrompt] =
-    useState<BeforeInstallPromptEvent | null>(null);
-  const [isInstalled, setIsInstalled] = useState(false);
   const [isInstalling, setIsInstalling] = useState(false);
-  const [isIOS, setIsIOS] = useState(false);
   const [showIOSInstructions, setShowIOSInstructions] = useState(false);
+
+  // Pull install state from the root-level PWAInstallProvider
+  // (captures beforeinstallprompt before this page ever mounts)
+  const { isInstallable, isInstalled, isIOS, install } = usePWAInstall();
 
   useEffect(() => {
     setMounted(true);
-
-    // Detect if already running as installed PWA
-    const isStandalone =
-      window.matchMedia("(display-mode: standalone)").matches ||
-      ("standalone" in window.navigator &&
-        (window.navigator as { standalone?: boolean }).standalone === true);
-    setIsInstalled(isStandalone);
-
-    // Detect iOS Safari (no beforeinstallprompt support)
-    const ua = navigator.userAgent;
-    const iosDevice = /iPad|iPhone|iPod/.test(ua) && !("MSStream" in window);
-    setIsIOS(iosDevice);
-
-    // Listen for the native browser install prompt
-    const handler = (e: Event) => {
-      e.preventDefault();
-      setInstallPrompt(e as BeforeInstallPromptEvent);
-    };
-    window.addEventListener("beforeinstallprompt", handler);
-
-    // Detect if user installs the app
-    window.addEventListener("appinstalled", () => {
-      setIsInstalled(true);
-      setInstallPrompt(null);
-      toast.success("TransitOps installed successfully on your device! 🎉");
-    });
-
-    return () => {
-      window.removeEventListener("beforeinstallprompt", handler);
-    };
   }, []);
 
   const handleInstall = async () => {
@@ -82,22 +45,22 @@ export function SettingsClient({ user }: SettingsClientProps) {
       return;
     }
 
-    if (!installPrompt) {
+    if (!isInstallable) {
       toast.info(
-        "Install prompt not available. Try opening this page in Chrome, Edge, or another supported browser."
+        "Install prompt not available. Try opening this page in Chrome or Edge and look for the install icon in the address bar."
       );
       return;
     }
 
     setIsInstalling(true);
     try {
-      await installPrompt.prompt();
-      const { outcome } = await installPrompt.userChoice;
+      const outcome = await install();
       if (outcome === "accepted") {
-        toast.success("Installing TransitOps...");
-        setInstallPrompt(null);
-      } else {
+        toast.success("TransitOps is being installed! 🎉");
+      } else if (outcome === "dismissed") {
         toast.info("Installation cancelled.");
+      } else {
+        toast.info("Install prompt unavailable — try Chrome or Edge.");
       }
     } catch (err) {
       console.error(err);
@@ -142,7 +105,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
   };
 
   // Determine install button state
-  const canInstall = mounted && !isInstalled && (installPrompt || isIOS);
+  const canInstall = mounted && !isInstalled && (isInstallable || isIOS);
   const installButtonLabel = isInstalling
     ? "Installing..."
     : isIOS
@@ -230,7 +193,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
             <CheckCircle2 className="h-5 w-5 text-emerald-600 dark:text-emerald-400 shrink-0" />
             <div>
               <p className="text-sm font-semibold text-emerald-700 dark:text-emerald-300">
-                App already installed
+                ✅ App already installed
               </p>
               <p className="text-xs text-emerald-600/80 dark:text-emerald-400/70">
                 TransitOps is running as an installed PWA on this device.
@@ -242,7 +205,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
             <button
               id="pwa-install-btn"
               onClick={handleInstall}
-              disabled={isInstalling || (!installPrompt && !isIOS)}
+              disabled={isInstalling || (!isInstallable && !isIOS)}
               className="flex w-full items-center justify-center gap-2.5 rounded-lg bg-sky-600 px-4 py-3 text-sm font-bold text-white shadow-md shadow-sky-500/20 transition-all hover:bg-sky-500 hover:shadow-sky-400/30 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed dark:bg-sky-500 dark:hover:bg-sky-400"
             >
               {isInstalling ? (
@@ -254,14 +217,14 @@ export function SettingsClient({ user }: SettingsClientProps) {
             </button>
 
             {/* Show hint if prompt not available (e.g. Firefox, already dismissed) */}
-            {!installPrompt && !isIOS && (
+            {!isInstallable && !isIOS && (
               <div className="flex items-start gap-2 rounded-lg border border-zinc-200 bg-zinc-50 p-3 dark:border-zinc-800 dark:bg-zinc-900/50">
                 <Info className="h-4 w-4 text-zinc-400 shrink-0 mt-0.5" />
                 <p className="text-xs text-zinc-500 dark:text-zinc-400">
-                  Install prompt not available. Open this page in{" "}
-                  <strong>Chrome</strong>, <strong>Edge</strong>, or{" "}
-                  <strong>Samsung Internet</strong> and look for the{" "}
-                  <strong>"Install app"</strong> icon in the address bar.
+                  Open this page in <strong>Chrome</strong> or{" "}
+                  <strong>Edge</strong> and look for the{" "}
+                  <strong>⊕ Install</strong> icon in the browser address bar,
+                  or use the button above once the browser detects the app.
                 </p>
               </div>
             )}
