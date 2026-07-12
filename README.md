@@ -70,3 +70,4 @@ You can click any demo account on the sign-in page to instantly autofill credent
 | **Financial Analyst** | `finance@transitops.com` | `password123` |
 
 Once logged in, go to **Settings** and click the **Seed / Reset Database** button to populate default vehicles, drivers, and expenses data immediately.
+.
