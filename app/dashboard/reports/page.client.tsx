@@ -212,42 +212,169 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
 
     try {
       const doc = new jsPDF();
+      
+      // Determine column widths based on report type (total printable width is 190mm)
+      const getColWidths = (report: ReportType): number[] => {
+        switch (report) {
+          case "utilization":
+            return [35, 45, 35, 35, 40];
+          case "roi":
+            return [30, 35, 23, 35, 23, 24, 20];
+          case "efficiency":
+            return [35, 45, 35, 35, 40];
+          case "maintenance":
+            return [30, 40, 20, 32, 32, 36];
+          case "driverHistory":
+            return [27, 30, 32, 32, 32, 22, 15];
+          default:
+            return headers.map(() => 190 / headers.length);
+        }
+      };
+
+      const colWidths = getColWidths(selectedReport);
+
+      // Helper function to truncate cell text that exceeds column width
+      const formatCellText = (text: string, maxWidth: number): string => {
+        if (doc.getTextWidth(text) <= maxWidth) return text;
+        let truncated = text;
+        while (truncated.length > 0 && doc.getTextWidth(truncated + "...") > maxWidth) {
+          truncated = truncated.slice(0, -1);
+        }
+        return truncated + "...";
+      };
+
+      // --- PAGE 1 HEADER ---
+      // Top accent strip
+      doc.setFillColor(2, 132, 199); // Sky 600
+      doc.rect(0, 0, 210, 4, "F");
+
+      // Brand Title
       doc.setFont("helvetica", "bold");
       doc.setFontSize(16);
-      doc.text(`TransitOps Fleet Report - ${selectedReport.toUpperCase()}`, 14, 15);
-      doc.setFont("helvetica", "normal");
-      doc.setFontSize(10);
-      doc.text(`Generated on: ${new Date().toLocaleDateString()} ${new Date().toLocaleTimeString()}`, 14, 22);
+      doc.setTextColor(15, 23, 42); // Slate 900
+      doc.text("TransitOps", 10, 16);
+      
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139); // Slate 500
+      doc.text("SMART TRANSPORT OPERATIONS PLATFORM", 10, 21);
 
-      let y = 35;
+      // Report Header info
       doc.setFont("helvetica", "bold");
-
-      // Calculate column widths
-      const colWidth = 180 / headers.length;
-
-      // Draw table headers
-      headers.forEach((h, i) => {
-        doc.text(h, 14 + i * colWidth, y);
-      });
-      doc.line(14, y + 2, 196, y + 2);
-      y += 8;
-
-      // Draw table rows
+      doc.setFontSize(11);
+      doc.setTextColor(2, 132, 199); // Sky 600
+      const formattedTitle = selectedReport.replace(/([A-Z])/g, ' $1').toUpperCase();
+      doc.text(`${formattedTitle} REPORT`, 10, 30);
+      
+      // Date info on right
       doc.setFont("helvetica", "normal");
-      rows.forEach((row) => {
-        if (y > 280) {
-          doc.addPage();
-          y = 20;
-        }
-        headers.forEach((headerKey, i) => {
-          const val = String(row[headerKey]);
-          doc.text(val, 14 + i * colWidth, y);
-        });
-        y += 6;
+      doc.setFontSize(8);
+      doc.setTextColor(100, 116, 139); // Slate 500
+      const dateStr = `Generated: ${new Date().toLocaleDateString("en-IN")} ${new Date().toLocaleTimeString("en-IN")}`;
+      doc.text(dateStr, 200, 30, { align: "right" });
+
+      // Border line under header
+      doc.setDrawColor(203, 213, 225); // Slate 300
+      doc.setLineWidth(0.5);
+      doc.line(10, 34, 200, 34);
+
+      let y = 45; // Start y coordinate for table
+      
+      // Draw Headers
+      doc.setFillColor(2, 132, 199); // Sky 600
+      doc.rect(10, y - 5, 190, 8, "F"); // Header background rect
+      
+      doc.setFont("helvetica", "bold");
+      doc.setFontSize(9);
+      doc.setTextColor(255, 255, 255); // White
+      
+      let currentX = 10;
+      headers.forEach((h, i) => {
+        const colW = colWidths[i];
+        doc.text(h, currentX + 2, y);
+        currentX += colW;
       });
+      
+      y += 8; // Row content start
+      
+      // Draw Rows
+      doc.setFont("helvetica", "normal");
+      doc.setFontSize(8);
+      doc.setTextColor(15, 23, 42); // Slate 900
+      
+      rows.forEach((row, rowIndex) => {
+        // Page boundary check
+        if (y + 8 > 275) {
+          doc.addPage();
+          
+          // Draw new page top strip
+          doc.setFillColor(2, 132, 199); // Sky 600 accent
+          doc.rect(0, 0, 210, 4, "F");
+          
+          y = 20; // reset y
+          
+          // Redraw Headers on new page
+          doc.setFillColor(2, 132, 199); // Sky 600
+          doc.rect(10, y - 5, 190, 8, "F");
+          
+          doc.setFont("helvetica", "bold");
+          doc.setFontSize(9);
+          doc.setTextColor(255, 255, 255); // White
+          
+          let headerX = 10;
+          headers.forEach((h, i) => {
+            const colW = colWidths[i];
+            doc.text(h, headerX + 2, y);
+            headerX += colW;
+          });
+          
+          y += 8; // move past header
+          
+          // Reset row font
+          doc.setFont("helvetica", "normal");
+          doc.setFontSize(8);
+          doc.setTextColor(15, 23, 42); // Slate 900
+        }
+        
+        // Alternating row background
+        if (rowIndex % 2 === 1) {
+          doc.setFillColor(248, 250, 252); // Slate 50
+          doc.rect(10, y - 5, 190, 7, "F");
+        }
+        
+        // Draw grid lines
+        doc.setDrawColor(226, 232, 240); // Slate 200
+        doc.setLineWidth(0.1);
+        doc.line(10, y + 2, 200, y + 2);
+        
+        let rowX = 10;
+        headers.forEach((headerKey, i) => {
+          const colW = colWidths[i];
+          const val = String(row[headerKey] !== null && row[headerKey] !== undefined ? row[headerKey] : "-");
+          
+          // Truncate if too long
+          const padding = 4;
+          const formattedVal = formatCellText(val, colW - padding);
+          
+          doc.text(formattedVal, rowX + 2, y);
+          rowX += colW;
+        });
+        
+        y += 7; // move to next row
+      });
+
+      // --- PAGE NUMBERS FOOTER ---
+      const pageCount = doc.internal.pages.length - 1; // get total pages
+      for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(8);
+        doc.setTextColor(100, 116, 139); // Slate 500
+        doc.text("TransitOps Platform - Confidential Fleet Report", 10, 287);
+        doc.text(`Page ${i} of ${pageCount}`, 200, 287, { align: "right" });
+      }
 
       doc.save(`transitops_${selectedReport}_report.pdf`);
-      toast.success("PDF file downloaded successfully!");
+      toast.success("PDF report downloaded successfully!");
     } catch (err) {
       console.error(err);
       toast.error("Failed to generate PDF document.");
