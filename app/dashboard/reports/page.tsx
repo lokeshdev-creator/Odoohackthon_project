@@ -2,6 +2,7 @@ import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { connectToDatabase } from "@/lib/db";
 import { Vehicle } from "@/models/Vehicle";
+import { Driver } from "@/models/Driver";
 import { Trip } from "@/models/Trip";
 import { MaintenanceLog } from "@/models/MaintenanceLog";
 import { Expense } from "@/models/Expense";
@@ -16,11 +17,13 @@ export default async function ReportsPage() {
   await connectToDatabase();
 
   const vehicles = await Vehicle.find({ isDeleted: false }).lean();
+  const drivers = await Driver.find({}).lean();
   const trips = await Trip.find({}).populate("vehicleId").populate("driverId").lean();
   const maintenance = await MaintenanceLog.find({}).populate("vehicleId").lean();
   const expenses = await Expense.find({}).lean();
 
   const serializedVehicles = JSON.parse(JSON.stringify(vehicles));
+  const serializedDrivers = JSON.parse(JSON.stringify(drivers));
   const serializedTrips = JSON.parse(JSON.stringify(trips));
   const serializedMaintenance = JSON.parse(JSON.stringify(maintenance));
   const serializedExpenses = JSON.parse(JSON.stringify(expenses));
@@ -28,6 +31,7 @@ export default async function ReportsPage() {
   return (
     <ReportsClient
       vehicles={serializedVehicles}
+      drivers={serializedDrivers}
       trips={serializedTrips}
       maintenance={serializedMaintenance}
       expenses={serializedExpenses}

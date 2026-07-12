@@ -57,6 +57,7 @@ interface Expense {
 
 interface ReportsClientProps {
   vehicles: Vehicle[];
+  drivers: Driver[];
   trips: Trip[];
   maintenance: MaintenanceLog[];
   expenses: Expense[];
@@ -64,8 +65,10 @@ interface ReportsClientProps {
 
 type ReportType = "utilization" | "roi" | "efficiency" | "maintenance" | "driverHistory";
 
-export function ReportsClient({ vehicles, trips, maintenance, expenses }: ReportsClientProps) {
+export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses }: ReportsClientProps) {
   const [selectedReport, setSelectedReport] = useState<ReportType>("utilization");
+  const [selectedDriverId, setSelectedDriverId] = useState<string>("all");
+  const [selectedVehicleId, setSelectedVehicleId] = useState<string>("all");
 
   // 1. Compile Fleet Utilization Report Data
   const getUtilizationData = () => {
@@ -140,7 +143,16 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
 
   // 5. Compile Driver History Report Data
   const getDriverHistoryData = () => {
-    const relevantTrips = trips.filter((t) => t.driverId && t.vehicleId && t.status !== "Draft");
+    let relevantTrips = trips.filter((t) => t.driverId && t.vehicleId && t.status !== "Draft");
+
+    if (selectedDriverId !== "all") {
+      relevantTrips = relevantTrips.filter((t) => t.driverId?._id === selectedDriverId);
+    }
+
+    if (selectedVehicleId !== "all") {
+      relevantTrips = relevantTrips.filter((t) => t.vehicleId?._id === selectedVehicleId);
+    }
+
     return relevantTrips.map((t) => {
       const dispatchStr = t.dispatchDate ? new Date(t.dispatchDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : "-";
       const completionStr = t.completionDate ? new Date(t.completionDate).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" }) : (t.status === "Dispatched" ? "On Trip (Ongoing)" : "-");
@@ -336,6 +348,42 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
               </button>
             </div>
           </div>
+
+          {selectedReport === "driverHistory" && (
+            <div className="flex flex-col sm:flex-row gap-3 bg-zinc-50/50 dark:bg-zinc-900/50 p-3 rounded-lg border border-zinc-200 dark:border-zinc-800">
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Filter by Driver</label>
+                <select
+                  value={selectedDriverId}
+                  onChange={(e) => setSelectedDriverId(e.target.value)}
+                  className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 w-full focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                >
+                  <option value="all">All Drivers</option>
+                  {drivers.map((d) => (
+                    <option key={d._id} value={d._id}>
+                      {d.name} ({d.licenseNumber})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="flex flex-col gap-1 flex-1">
+                <label className="text-xs font-semibold text-zinc-500 dark:text-zinc-400">Filter by Vehicle</label>
+                <select
+                  value={selectedVehicleId}
+                  onChange={(e) => setSelectedVehicleId(e.target.value)}
+                  className="rounded-lg border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 w-full focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+                >
+                  <option value="all">All Vehicles</option>
+                  {vehicles.map((v) => (
+                    <option key={v._id} value={v._id}>
+                      {v.name} ({v.registrationNumber})
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+          )}
 
           {/* Table Preview */}
           <div className="overflow-hidden rounded-xl border border-zinc-200 bg-white shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
