@@ -394,12 +394,12 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
       </div>
 
       {/* Tabs selectors */}
-      <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+      <div className="flex flex-col gap-6 lg:flex-row lg:items-start">
         {/* Left Side Tab Links */}
-        <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:w-64 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+        <div className="flex flex-row lg:flex-col gap-1.5 overflow-x-auto lg:w-64 rounded-xl border border-zinc-200 bg-white p-2 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 shrink-0">
           <button
             onClick={() => setSelectedReport("utilization")}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedReport === "utilization"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
                 : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -410,7 +410,7 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
 
           <button
             onClick={() => setSelectedReport("roi")}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedReport === "roi"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
                 : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -421,7 +421,7 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
 
           <button
             onClick={() => setSelectedReport("efficiency")}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedReport === "efficiency"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
                 : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -432,7 +432,7 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
 
           <button
             onClick={() => setSelectedReport("maintenance")}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedReport === "maintenance"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
                 : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -443,7 +443,7 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
 
           <button
             onClick={() => setSelectedReport("driverHistory")}
-            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold whitespace-nowrap shrink-0 transition-all ${
               selectedReport === "driverHistory"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
                 : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
@@ -454,22 +454,26 @@ export function ReportsClient({ vehicles, drivers, trips, maintenance, expenses 
         </div>
 
         {/* Right Side Report Preview and Actions */}
-        <div className="flex-1 space-y-4">
-          <div className="flex items-center justify-between border-b border-zinc-200 pb-3 dark:border-zinc-800">
-            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 capitalize">
-              {selectedReport} Report Preview
+        <div className="flex-1 min-w-0 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 border-b border-zinc-200 pb-3 dark:border-zinc-800">
+            <h2 className="text-lg font-bold text-zinc-900 dark:text-zinc-50">
+              {selectedReport === "utilization" && "Fleet Utilization"}
+              {selectedReport === "roi" && "Operational Cost & ROI"}
+              {selectedReport === "efficiency" && "Fuel Efficiency"}
+              {selectedReport === "maintenance" && "Maintenance Summary"}
+              {selectedReport === "driverHistory" && "Driver History"} Report Preview
             </h2>
 
             <div className="flex gap-2">
               <button
                 onClick={handleExportCSV}
-                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all"
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-emerald-300 hover:bg-emerald-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all cursor-pointer"
               >
                 <FileSpreadsheet className="h-4 w-4 text-emerald-600 dark:text-emerald-400" /> Export CSV
               </button>
               <button
                 onClick={handleExportPDF}
-                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-red-350 hover:bg-red-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all"
+                className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-red-350 hover:bg-red-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all cursor-pointer"
               >
                 <FileText className="h-4 w-4 text-red-500 dark:text-red-400" /> Export PDF
               </button>
