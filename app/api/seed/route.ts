@@ -61,7 +61,7 @@ export async function GET() {
       },
     ]);
 
-    // Reference dates based on Current time: 2026-07-12
+    // Setup base timeline variables
     const now = new Date();
     const getRelativeDate = (daysAgo: number, hoursAgo: number = 0) => {
       const date = new Date(now);
@@ -70,18 +70,18 @@ export async function GET() {
       return date;
     };
 
-    // 4. Seed vehicles (Indian registration format and vehicle types)
-    const vehicles = await Vehicle.create([
+    // 4. Seed initial vehicles (Indian registration format and vehicle types)
+    const seededVehicles = await Vehicle.create([
       {
         registrationNumber: "MH-12-PQ-8821",
         name: "Tata Signa 5530.S",
         model: "Tata Signa 2024",
         type: "Heavy Truck",
         capacity: 35000,
-        odometer: 120150,
+        odometer: 120000, // will be updated dynamically
         acquisitionCost: 45000,
         purchaseDate: new Date("2024-02-15"),
-        status: "On Trip", // Active on Trip 7
+        status: "Available",
       },
       {
         registrationNumber: "DL-3C-AG-1420",
@@ -89,10 +89,10 @@ export async function GET() {
         model: "Leyland Ecomet 2023",
         type: "Box Truck",
         capacity: 10000,
-        odometer: 45270,
+        odometer: 45000, // will be updated dynamically
         acquisitionCost: 28000,
         purchaseDate: new Date("2023-09-10"),
-        status: "On Trip", // Active on Trip 6
+        status: "Available",
       },
       {
         registrationNumber: "KA-03-MK-7744",
@@ -100,7 +100,7 @@ export async function GET() {
         model: "Bolero Maxi Truck 2023",
         type: "Cargo Van",
         capacity: 1500,
-        odometer: 25350,
+        odometer: 25000, // will be updated dynamically
         acquisitionCost: 11000,
         purchaseDate: new Date("2023-12-05"),
         status: "Available",
@@ -111,10 +111,10 @@ export async function GET() {
         model: "BharatBenz 2823 2022",
         type: "Heavy Truck",
         capacity: 20000,
-        odometer: 85530,
+        odometer: 85000, // will be updated dynamically
         acquisitionCost: 42000,
         purchaseDate: new Date("2022-05-20"),
-        status: "In Shop", // In shop for brake overhaul
+        status: "Available",
       },
       {
         registrationNumber: "MH-43-XY-1122",
@@ -122,7 +122,7 @@ export async function GET() {
         model: "Eicher Pro 2021",
         type: "Box Truck",
         capacity: 3500,
-        odometer: 60570,
+        odometer: 60000, // will be updated dynamically
         acquisitionCost: 16000,
         purchaseDate: new Date("2021-08-18"),
         status: "Available",
@@ -130,14 +130,14 @@ export async function GET() {
     ]);
 
     // 5. Seed drivers (Indian names, phone numbers and licenses)
-    const drivers = await Driver.create([
+    const seededDrivers = await Driver.create([
       {
         name: "Ramesh Yadav",
         phone: "+91 98765 43210",
         email: "ramesh.yadav@transitops.com",
         licenseNumber: "DL-MH12-2020-0012345",
         licenseCategory: "Class A CDL",
-        licenseExpiry: getRelativeDate(-500), // Far in the future
+        licenseExpiry: getRelativeDate(-500),
         safetyScore: 98,
         status: "Available",
       },
@@ -149,7 +149,7 @@ export async function GET() {
         licenseCategory: "Class B CDL",
         licenseExpiry: getRelativeDate(-450),
         safetyScore: 92,
-        status: "On Trip", // Active on Trip 6
+        status: "Available",
       },
       {
         name: "Gurpreet Singh",
@@ -159,7 +159,7 @@ export async function GET() {
         licenseCategory: "Class A CDL",
         licenseExpiry: getRelativeDate(-300),
         safetyScore: 88,
-        status: "On Trip", // Active on Trip 7
+        status: "Available",
       },
       {
         name: "Vijay Mhatre",
@@ -183,248 +183,257 @@ export async function GET() {
       },
     ]);
 
-    // 6. Seed active/completed trips spanning the last 1 week (July 5th to July 12th)
-    const trips = await Trip.create([
-      {
-        source: "Mumbai, MH",
-        destination: "Pune, MH",
-        vehicleId: vehicles[0]._id, // Tata Signa
-        driverId: drivers[0]._id, // Ramesh Yadav
-        cargoWeight: 28000,
-        plannedDistance: 150,
-        actualDistance: 150,
-        fuelConsumed: 60,
-        revenue: 1200,
-        status: "Completed",
-        dispatchDate: getRelativeDate(6, 4), // 6 days ago
-        completionDate: getRelativeDate(6),
-      },
-      {
-        source: "Delhi, DL",
-        destination: "Jaipur, RJ",
-        vehicleId: vehicles[1]._id, // Ashok Leyland
-        driverId: drivers[1]._id, // Suresh Prasad
-        cargoWeight: 8500,
-        plannedDistance: 270,
-        actualDistance: 270,
-        fuelConsumed: 90,
-        revenue: 1800,
-        status: "Completed",
-        dispatchDate: getRelativeDate(5, 6), // 5 days ago
-        completionDate: getRelativeDate(5),
-      },
-      {
-        source: "Bangalore, KA",
-        destination: "Chennai, TN",
-        vehicleId: vehicles[2]._id, // Mahindra Bolero
-        driverId: drivers[3]._id, // Vijay Mhatre
-        cargoWeight: 1200,
-        plannedDistance: 350,
-        actualDistance: 360,
-        fuelConsumed: 45,
-        revenue: 950,
-        status: "Completed",
-        dispatchDate: getRelativeDate(4, 8), // 4 days ago
-        completionDate: getRelativeDate(4),
-      },
-      {
-        source: "Mumbai, MH",
-        destination: "Ahmedabad, GJ",
-        vehicleId: vehicles[3]._id, // BharatBenz
-        driverId: drivers[2]._id, // Gurpreet Singh
-        cargoWeight: 18000,
-        plannedDistance: 530,
-        actualDistance: 535,
-        fuelConsumed: 175,
-        revenue: 2800,
-        status: "Completed",
-        dispatchDate: getRelativeDate(3, 2), // 3 days ago
-        completionDate: getRelativeDate(2), // 2 days ago
-      },
-      {
-        source: "Hyderabad, TS",
-        destination: "Bangalore, KA",
-        vehicleId: vehicles[4]._id, // Eicher Pro
-        driverId: drivers[0]._id, // Ramesh Yadav
-        cargoWeight: 3000,
-        plannedDistance: 570,
-        actualDistance: 570,
-        fuelConsumed: 120,
-        revenue: 1600,
-        status: "Completed",
-        dispatchDate: getRelativeDate(2, 6), // 2 days ago
-        completionDate: getRelativeDate(1), // 1 day ago
-      },
-      {
-        source: "Delhi, DL",
-        destination: "Chandigarh, CH",
-        vehicleId: vehicles[1]._id, // Ashok Leyland (On Trip)
-        driverId: drivers[1]._id, // Suresh Prasad (On Trip)
-        cargoWeight: 7000,
-        plannedDistance: 250,
-        revenue: 1100,
-        status: "Dispatched",
-        dispatchDate: getRelativeDate(1, 2), // 1 day ago
-      },
-      {
-        source: "Mumbai, MH",
-        destination: "Pune, MH",
-        vehicleId: vehicles[0]._id, // Tata Signa (On Trip)
-        driverId: drivers[2]._id, // Gurpreet Singh (On Trip)
-        cargoWeight: 25000,
-        plannedDistance: 150,
-        revenue: 1000,
-        status: "Dispatched",
-        dispatchDate: getRelativeDate(0, 5), // 5 hours ago
-      },
-      {
-        source: "Chennai, TN",
-        destination: "Bangalore, KA",
-        vehicleId: vehicles[2]._id,
-        driverId: drivers[3]._id,
-        cargoWeight: 1400,
-        plannedDistance: 350,
-        revenue: 900,
-        status: "Draft",
-      },
-    ]);
+    // Odometer state tracking for dynamic addition
+    const odometers = [120000, 45000, 25000, 85000, 60000];
 
-    // 7. Seed maintenance logs
-    const maintenance = await MaintenanceLog.create([
+    const routes = [
+      { source: "Mumbai, MH", destination: "Pune, MH", distance: 150 },
+      { source: "Delhi, DL", destination: "Jaipur, RJ", distance: 270 },
+      { source: "Bangalore, KA", destination: "Chennai, TN", distance: 350 },
+      { source: "Mumbai, MH", destination: "Ahmedabad, GJ", distance: 530 },
+      { source: "Hyderabad, TS", destination: "Bangalore, KA", distance: 570 },
+      { source: "Delhi, DL", destination: "Chandigarh, CH", distance: 250 },
+      { source: "Kolkata, WB", destination: "Patna, BR", distance: 580 },
+      { source: "Chennai, TN", destination: "Bangalore, KA", distance: 350 },
+    ];
+
+    const tripsToCreate = [];
+    const fuelLogsToCreate = [];
+    const expensesToCreate = [];
+
+    // 6. Generate completed trips & related records spread over the last 30 days (excluding today)
+    for (let day = 29; day >= 1; day--) {
+      // Generate 1 or 2 completed trips per day (approx 45 trips total)
+      const dailyCount = Math.floor(Math.random() * 2) + 1;
+
+      for (let i = 0; i < dailyCount; i++) {
+        // Randomly pick a route, vehicle and driver (excluding suspended drivers)
+        const route = routes[Math.floor(Math.random() * routes.length)];
+        const vehicleIdx = Math.floor(Math.random() * seededVehicles.length);
+        const driverIdx = Math.floor(Math.random() * 4); // index 0-3 (excluding suspended index 4)
+
+        const vehicle = seededVehicles[vehicleIdx];
+        const driver = seededDrivers[driverIdx];
+
+        const actualDistance = route.distance + Math.floor(Math.random() * 21) - 5; // dist +/- 5 to 15km
+        
+        // Calculate fuel efficiency based on vehicle type
+        let efficiency = 5.0;
+        if (vehicle.type === "Heavy Truck") {
+          efficiency = 2.5 + Math.random() * 0.8; // 2.5 to 3.3
+        } else if (vehicle.type === "Box Truck") {
+          efficiency = 4.5 + Math.random() * 1.5; // 4.5 to 6.0
+        } else {
+          efficiency = 7.5 + Math.random() * 2.5; // 7.5 to 10.0
+        }
+
+        const fuelConsumed = Math.round((actualDistance / efficiency) * 10) / 10;
+        const fuelCost = Math.round(fuelConsumed * 1.2 * 100) / 100; // ~$1.2/liter
+        const revenue = Math.round(route.distance * (5 + Math.random() * 3)); // Revenue scale
+
+        // Accumulate odometer
+        odometers[vehicleIdx] += actualDistance;
+        const currentOdo = odometers[vehicleIdx];
+
+        // Timing
+        const dispatchDate = getRelativeDate(day, 8 + Math.floor(Math.random() * 4)); // Dispatched between 8 AM and 12 PM
+        const travelHours = Math.ceil(actualDistance / 60); // average 60km/h
+        const completionDate = new Date(dispatchDate);
+        completionDate.setHours(completionDate.getHours() + travelHours);
+
+        // Add Trip
+        tripsToCreate.push({
+          source: route.source,
+          destination: route.destination,
+          vehicleId: vehicle._id,
+          driverId: driver._id,
+          cargoWeight: Math.floor(vehicle.capacity * 0.5) + Math.floor(Math.random() * (vehicle.capacity * 0.4)),
+          plannedDistance: route.distance,
+          actualDistance: actualDistance,
+          fuelConsumed: fuelConsumed,
+          revenue: revenue,
+          status: "Completed",
+          dispatchDate: dispatchDate,
+          completionDate: completionDate,
+        });
+
+        // Add Fuel Log
+        fuelLogsToCreate.push({
+          vehicleId: vehicle._id,
+          liters: fuelConsumed,
+          cost: fuelCost,
+          odometer: currentOdo - Math.floor(actualDistance * 0.3), // Fueled mid-trip
+          date: dispatchDate,
+        });
+
+        // Add Fuel Expense
+        expensesToCreate.push({
+          vehicleId: vehicle._id,
+          category: "Fuel",
+          amount: fuelCost,
+          description: `Fuel Refill: ${fuelConsumed} Liters for trip ${route.source} - ${route.destination}`,
+          date: dispatchDate,
+        });
+
+        // Add Toll Expense (30% chance)
+        if (Math.random() < 0.3) {
+          const tollAmount = Math.floor(Math.random() * 31) + 20; // 20-50
+          expensesToCreate.push({
+            vehicleId: vehicle._id,
+            category: "Toll",
+            amount: tollAmount,
+            description: `Toll Charges: ${route.source} to ${route.destination}`,
+            date: dispatchDate,
+          });
+        }
+      }
+    }
+
+    // 7. Seed active/cancelled/draft trips for today (day 0)
+    // Active Trip 1: Vehicle 1 (Ashok Leyland) and Driver 1 (Suresh Prasad)
+    tripsToCreate.push({
+      source: "Delhi, DL",
+      destination: "Chandigarh, CH",
+      vehicleId: seededVehicles[1]._id,
+      driverId: seededDrivers[1]._id,
+      cargoWeight: 7500,
+      plannedDistance: 250,
+      revenue: 1100,
+      status: "Dispatched",
+      dispatchDate: getRelativeDate(0, 4), // 4 hours ago
+    });
+
+    // Active Trip 2: Vehicle 0 (Tata Signa) and Driver 2 (Gurpreet Singh)
+    tripsToCreate.push({
+      source: "Mumbai, MH",
+      destination: "Pune, MH",
+      vehicleId: seededVehicles[0]._id,
+      driverId: seededDrivers[2]._id,
+      cargoWeight: 26000,
+      plannedDistance: 150,
+      revenue: 1000,
+      status: "Dispatched",
+      dispatchDate: getRelativeDate(0, 1), // 1 hour ago
+    });
+
+    // Draft Trip: Vehicle 2 (Mahindra Bolero) and Driver 3 (Vijay Mhatre)
+    tripsToCreate.push({
+      source: "Chennai, TN",
+      destination: "Bangalore, KA",
+      vehicleId: seededVehicles[2]._id,
+      driverId: seededDrivers[3]._id,
+      cargoWeight: 1300,
+      plannedDistance: 350,
+      revenue: 900,
+      status: "Draft",
+    });
+
+    // Cancelled Trip: Vehicle 4 (Eicher Pro) and Driver 0 (Ramesh Yadav)
+    tripsToCreate.push({
+      source: "Hyderabad, TS",
+      destination: "Mumbai, MH",
+      vehicleId: seededVehicles[4]._id,
+      driverId: seededDrivers[0]._id,
+      cargoWeight: 3100,
+      plannedDistance: 710,
+      revenue: 2200,
+      status: "Cancelled",
+      dispatchDate: getRelativeDate(1),
+    });
+
+    // Insert all accumulated trips, fuel logs, and expenses
+    const trips = await Trip.create(tripsToCreate);
+    const fuelLogs = await FuelLog.create(fuelLogsToCreate);
+
+    // 8. Seed Maintenance Logs
+    const maintenanceLogsToCreate = [
       {
-        vehicleId: vehicles[3]._id, // BharatBenz (In Shop)
+        vehicleId: seededVehicles[3]._id, // BharatBenz (In Shop)
         type: "Brake System Repair",
         description: "Replaced worn out brake pads and drums, bled the brake lines.",
         cost: 500,
         startDate: getRelativeDate(2),
-        endDate: getRelativeDate(-2), // 2 days from now
+        endDate: getRelativeDate(-2), // expected completion in 2 days
         status: "Open",
       },
       {
-        vehicleId: vehicles[4]._id, // Eicher Pro
+        vehicleId: seededVehicles[4]._id, // Eicher Pro (Completed service 25 days ago)
         type: "Routine Service",
-        description: "Replaced engine oil, air filter, and cabin filter.",
+        description: "Standard oil change, fuel filters inspection and air filter cleaning.",
         cost: 150,
-        startDate: getRelativeDate(7),
-        endDate: getRelativeDate(7),
+        startDate: getRelativeDate(25),
+        endDate: getRelativeDate(25),
         status: "Closed",
       },
-    ]);
+      {
+        vehicleId: seededVehicles[2]._id, // Mahindra Bolero (Completed tyre replacement 15 days ago)
+        type: "Tyre Replacement",
+        description: "Replaced two worn out front tyres with new tubeless radials.",
+        cost: 220,
+        startDate: getRelativeDate(15),
+        endDate: getRelativeDate(15),
+        status: "Closed",
+      },
+      {
+        vehicleId: seededVehicles[0]._id, // Tata Signa (Completed suspension service 8 days ago)
+        type: "Suspension Service",
+        description: "Greased suspension pins and replaced front shock absorbers.",
+        cost: 380,
+        startDate: getRelativeDate(8),
+        endDate: getRelativeDate(8),
+        status: "Closed",
+      },
+    ];
 
-    // 8. Seed fuel logs (matching completed trips)
-    const fuelLogs = await FuelLog.create([
-      {
-        vehicleId: vehicles[0]._id,
-        liters: 60,
-        cost: 72,
-        odometer: 120090,
-        date: getRelativeDate(6, 2),
-      },
-      {
-        vehicleId: vehicles[1]._id,
-        liters: 90,
-        cost: 108,
-        odometer: 45180,
-        date: getRelativeDate(5, 3),
-      },
-      {
-        vehicleId: vehicles[2]._id,
-        liters: 45,
-        cost: 54,
-        odometer: 25045,
-        date: getRelativeDate(4, 4),
-      },
-      {
-        vehicleId: vehicles[3]._id,
-        liters: 175,
-        cost: 210,
-        odometer: 85175,
-        date: getRelativeDate(3, 1),
-      },
-      {
-        vehicleId: vehicles[4]._id,
-        liters: 120,
-        cost: 144,
-        odometer: 60120,
-        date: getRelativeDate(2, 3),
-      },
-    ]);
+    const maintenance = await MaintenanceLog.create(maintenanceLogsToCreate);
 
-    // 9. Seed expenses
-    await Expense.create([
+    // Add corresponding maintenance expenses to the pool
+    expensesToCreate.push(
       {
-        vehicleId: vehicles[0]._id,
-        category: "Fuel",
-        amount: 72,
-        description: "Fuel Refill: 60 Liters for Trip Mumbai-Pune",
-        date: getRelativeDate(6, 2),
-      },
-      {
-        vehicleId: vehicles[1]._id,
-        category: "Fuel",
-        amount: 108,
-        description: "Fuel Refill: 90 Liters for Trip Delhi-Jaipur",
-        date: getRelativeDate(5, 3),
-      },
-      {
-        vehicleId: vehicles[2]._id,
-        category: "Fuel",
-        amount: 54,
-        description: "Fuel Refill: 45 Liters for Trip Bangalore-Chennai",
-        date: getRelativeDate(4, 4),
-      },
-      {
-        vehicleId: vehicles[3]._id,
-        category: "Fuel",
-        amount: 210,
-        description: "Fuel Refill: 175 Liters for Trip Mumbai-Ahmedabad",
-        date: getRelativeDate(3, 1),
-      },
-      {
-        vehicleId: vehicles[4]._id,
-        category: "Fuel",
-        amount: 144,
-        description: "Fuel Refill: 120 Liters for Trip Hyderabad-Bangalore",
-        date: getRelativeDate(2, 3),
-      },
-      {
-        vehicleId: vehicles[3]._id,
-        category: "Toll",
-        amount: 45,
-        description: "National Highway tolls (Mumbai-Ahmedabad)",
-        date: getRelativeDate(3),
-      },
-      {
-        vehicleId: vehicles[4]._id,
-        category: "Toll",
-        amount: 35,
-        description: "Highway tolls (Hyderabad-Bangalore)",
-        date: getRelativeDate(2),
-      },
-      {
-        vehicleId: vehicles[2]._id,
-        category: "Insurance",
-        amount: 250,
-        description: "Monthly fleet insurance premium allocation",
-        date: getRelativeDate(7),
-      },
-      {
-        vehicleId: vehicles[3]._id,
+        vehicleId: seededVehicles[3]._id,
         category: "Repair",
         amount: 500,
-        description: "Maintenance Service: Brake System Repair",
+        description: "Service Charge: Brake System Repair (Open)",
         date: getRelativeDate(2),
       },
       {
-        vehicleId: vehicles[4]._id,
+        vehicleId: seededVehicles[4]._id,
         category: "Maintenance",
         amount: 150,
-        description: "Service: Routine oil change and air filters",
-        date: getRelativeDate(7),
+        description: "Service Charge: Routine Service (Closed)",
+        date: getRelativeDate(25),
       },
-    ]);
+      {
+        vehicleId: seededVehicles[2]._id,
+        category: "Repair",
+        amount: 220,
+        description: "Service Charge: Tyre Replacement (Closed)",
+        date: getRelativeDate(15),
+      },
+      {
+        vehicleId: seededVehicles[0]._id,
+        category: "Maintenance",
+        amount: 380,
+        description: "Service Charge: Suspension Service (Closed)",
+        date: getRelativeDate(8),
+      }
+    );
 
-    // 10. Seed notifications
+    // Add weekly insurance expenses across the last 30 days
+    for (let w = 4; w >= 1; w--) {
+      expensesToCreate.push({
+        vehicleId: seededVehicles[2]._id,
+        category: "Insurance",
+        amount: 250,
+        description: `Insurance: Weekly fleet premium allocation (W-${w})`,
+        date: getRelativeDate(w * 7),
+      });
+    }
+
+    // Insert all accumulated expenses
+    await Expense.create(expensesToCreate);
+
+    // 9. Seed notifications
     await Notification.create([
       {
         type: "LicenseExpiry",
@@ -440,13 +449,41 @@ export async function GET() {
       },
     ]);
 
+    // 10. Update Vehicles with calculated final odometers and statuses
+    // Final alignment check:
+    // Vehicle index 0 (Tata) -> On Trip
+    // Vehicle index 1 (Leyland) -> On Trip
+    // Vehicle index 2 (Bolero) -> Available
+    // Vehicle index 3 (BharatBenz) -> In Shop
+    // Vehicle index 4 (Eicher) -> Available
+    for (let i = 0; i < seededVehicles.length; i++) {
+      const finalStatus = i === 0 || i === 1 ? "On Trip" : i === 3 ? "In Shop" : "Available";
+      await Vehicle.findByIdAndUpdate(seededVehicles[i]._id, {
+        odometer: odometers[i],
+        status: finalStatus,
+      });
+    }
+
+    // 11. Update Drivers with final statuses based on active trips
+    // Driver index 0 (Ramesh) -> Available (Trip cancelled, no active trip)
+    // Driver index 1 (Suresh) -> On Trip (Active Trip 1)
+    // Driver index 2 (Gurpreet) -> On Trip (Active Trip 2)
+    // Driver index 3 (Vijay) -> Available (Trip draft, not active)
+    // Driver index 4 (Anil) -> Suspended
+    for (let i = 0; i < seededDrivers.length; i++) {
+      const finalStatus = i === 1 || i === 2 ? "On Trip" : i === 4 ? "Suspended" : "Available";
+      await Driver.findByIdAndUpdate(seededDrivers[i]._id, {
+        status: finalStatus,
+      });
+    }
+
     return NextResponse.json({
       success: true,
-      message: "Database seeded successfully with Indian fleet data!",
+      message: "Database seeded successfully with 1-month Indian fleet data!",
       seededCounts: {
         users: users.length,
-        vehicles: vehicles.length,
-        drivers: drivers.length,
+        vehicles: seededVehicles.length,
+        drivers: seededDrivers.length,
         trips: trips.length,
         maintenanceLogs: maintenance.length,
         fuelLogs: fuelLogs.length,
