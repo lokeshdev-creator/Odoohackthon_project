@@ -1,7 +1,7 @@
 // Dynamically override NEXTAUTH_URL in production / Vercel to resolve correct redirects
 if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
-  const host = process.env.VERCEL_URL || "odoohackthon-project.vercel.app";
-  process.env.NEXTAUTH_URL = host.startsWith("http") ? host : `https://${host}`;
+  const host = "odoohackthon-project.vercel.app";
+  process.env.NEXTAUTH_URL = `https://${host}`;
   process.env.AUTH_URL = process.env.NEXTAUTH_URL;
 }
 
