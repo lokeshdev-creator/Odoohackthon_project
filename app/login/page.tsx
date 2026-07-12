@@ -50,10 +50,31 @@ export default function LoginPage() {
     }
   };
 
-  const handleAutofill = (demoEmail: string) => {
+  const handleAutofill = async (demoEmail: string) => {
     setEmail(demoEmail);
     setPassword("password123");
-    toast.success(`Autofilled credentials for ${demoEmail}`);
+    setLoading(true);
+    toast.loading(`Signing in as ${demoEmail}...`, { id: "autofill-login" });
+    try {
+      const res = await signIn("credentials", {
+        email: demoEmail,
+        password: "password123",
+        redirect: false,
+      });
+
+      if (res?.error) {
+        toast.error("Invalid email or password", { id: "autofill-login" });
+      } else {
+        toast.success("Welcome to TransitOps!", { id: "autofill-login" });
+        router.push("/dashboard");
+        router.refresh();
+      }
+    } catch (err) {
+      toast.error("An unexpected error occurred during login", { id: "autofill-login" });
+      console.error(err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
