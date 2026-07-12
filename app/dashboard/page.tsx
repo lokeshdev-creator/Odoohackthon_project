@@ -353,6 +353,45 @@ export default async function DashboardPage({ searchParams }: PageProps) {
     })
   );
 
+  // Weather alerts based on selected region
+  let weatherAlert = {
+    status: "Clear / Optimal",
+    details: "All main transport routes are clear. Optimal driving conditions.",
+    severity: "info",
+  };
+
+  if (selectedRegion === "East") {
+    weatherAlert = {
+      status: "Rain Advisory",
+      details: "Wet road surfaces on Route 9. Drivers advised to maintain safe headways.",
+      severity: "warning",
+    };
+  } else if (selectedRegion === "West") {
+    weatherAlert = {
+      status: "Heavy Wind Warning",
+      details: "High-profile vehicles should exercise caution on coastal bridges.",
+      severity: "warning",
+    };
+  } else if (selectedRegion === "South") {
+    weatherAlert = {
+      status: "Optimal / Clear",
+      details: "Dry roadways, normal traffic flow across regional corridors.",
+      severity: "success",
+    };
+  } else if (selectedRegion === "North") {
+    weatherAlert = {
+      status: "Congestion Alert",
+      details: "Moderate traffic delays near metropolitan interchanges. Expect +15 min transit times.",
+      severity: "info",
+    };
+  } else {
+    weatherAlert = {
+      status: "Normal Operations",
+      details: "No critical weather disruptions reported across the national transport corridors.",
+      severity: "success",
+    };
+  }
+
   return (
     <div className="space-y-6">
       {/* Access Warning Alert */}
@@ -383,6 +422,73 @@ export default async function DashboardPage({ searchParams }: PageProps) {
           </div>
           <div className="shrink-0 bg-zinc-50/50 backdrop-blur dark:bg-zinc-950/25 p-1.5 rounded-xl border border-zinc-200/65 dark:border-zinc-800/40">
             <RegionSelector />
+          </div>
+        </div>
+      </div>
+
+      {/* Weather & Quick Action Row */}
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
+        {/* Weather Card */}
+        <div className="rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 flex flex-col justify-between animate-fade-in">
+          <div>
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+                Weather &amp; Route Advisory
+              </h3>
+              <span className={`rounded-full px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider ${
+                weatherAlert.severity === "warning"
+                  ? "bg-amber-100 text-amber-800 dark:bg-amber-950/40 dark:text-amber-400"
+                  : weatherAlert.severity === "success"
+                  ? "bg-emerald-100 text-emerald-800 dark:bg-emerald-950/40 dark:text-emerald-400"
+                  : "bg-blue-100 text-blue-800 dark:bg-blue-950/40 dark:text-blue-400"
+              }`}>
+                {weatherAlert.status}
+              </span>
+            </div>
+            <p className="mt-2.5 text-xs font-medium text-zinc-700 dark:text-zinc-300 leading-relaxed">
+              {weatherAlert.details}
+            </p>
+          </div>
+          <div className="mt-4 flex items-center justify-between border-t border-zinc-100 pt-3 dark:border-zinc-800 text-[10px] text-zinc-400">
+            <span>Region: <strong>{selectedRegion}</strong></span>
+            <span>Status: Active</span>
+          </div>
+        </div>
+
+        {/* Quick Actions Panel */}
+        <div className="lg:col-span-2 rounded-2xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-zinc-500 dark:text-zinc-400 mb-3">
+            Quick Action Panel
+          </h3>
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <a
+              href="/dashboard/trips"
+              className="flex flex-col items-center justify-center rounded-xl border border-zinc-100 bg-zinc-50/50 p-3 text-center transition-all hover:bg-sky-50/30 hover:border-sky-200 dark:border-zinc-800 dark:bg-zinc-950/20 dark:hover:bg-zinc-800/40"
+            >
+              <Route className="h-5 w-5 text-sky-600 dark:text-sky-400 mb-1.5" />
+              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Dispatch Trip</span>
+            </a>
+            <a
+              href="/dashboard/vehicles"
+              className="flex flex-col items-center justify-center rounded-xl border border-zinc-100 bg-zinc-50/50 p-3 text-center transition-all hover:bg-sky-50/30 hover:border-sky-200 dark:border-zinc-800 dark:bg-zinc-950/20 dark:hover:bg-zinc-800/40"
+            >
+              <Truck className="h-5 w-5 text-indigo-600 dark:text-indigo-400 mb-1.5" />
+              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Fleet Registry</span>
+            </a>
+            <a
+              href="/dashboard/maintenance"
+              className="flex flex-col items-center justify-center rounded-xl border border-zinc-100 bg-zinc-50/50 p-3 text-center transition-all hover:bg-sky-50/30 hover:border-sky-200 dark:border-zinc-800 dark:bg-zinc-950/20 dark:hover:bg-zinc-800/40"
+            >
+              <Wrench className="h-5 w-5 text-amber-600 dark:text-amber-400 mb-1.5" />
+              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Maint Shop</span>
+            </a>
+            <a
+              href="/dashboard/expenses"
+              className="flex flex-col items-center justify-center rounded-xl border border-zinc-100 bg-zinc-50/50 p-3 text-center transition-all hover:bg-sky-50/30 hover:border-sky-200 dark:border-zinc-800 dark:bg-zinc-950/20 dark:hover:bg-zinc-800/40"
+            >
+              <DollarSign className="h-5 w-5 text-emerald-600 dark:text-emerald-400 mb-1.5" />
+              <span className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Record Expense</span>
+            </a>
           </div>
         </div>
       </div>
