@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { useTheme } from "next-themes";
+import { useState, useEffect } from "react";
+import { useTheme } from "@/components/theme-provider";
 import { Sun, Moon, Database, Loader2, User, Key, Check } from "lucide-react";
 import { toast } from "sonner";
 
@@ -14,8 +14,13 @@ interface SettingsClientProps {
 }
 
 export function SettingsClient({ user }: SettingsClientProps) {
-  const { theme, setTheme } = useTheme();
+  const { setTheme, resolvedTheme } = useTheme();
+  const [mounted, setMounted] = useState(false);
   const [loadingSeed, setLoadingSeed] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const handleSeedDatabase = async () => {
     if (
@@ -91,27 +96,35 @@ export function SettingsClient({ user }: SettingsClientProps) {
       {/* Theme Toggling */}
       <div className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm dark:border-zinc-800 dark:bg-zinc-900">
         <h3 className="text-sm font-semibold uppercase tracking-wider text-zinc-400 mb-4 flex items-center gap-2">
-          {theme === "dark" ? <Moon className="h-4 w-4" /> : <Sun className="h-4 w-4" />}
+          {!mounted ? (
+            <div className="h-4 w-4 animate-pulse rounded-full bg-zinc-200 dark:bg-zinc-700" />
+          ) : resolvedTheme === "dark" ? (
+            <Moon className="h-4 w-4" />
+          ) : (
+            <Sun className="h-4 w-4" />
+          )}
           Display Theme Control
         </h3>
 
         <div className="flex gap-3">
           <button
             onClick={() => setTheme("light")}
+            disabled={!mounted}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
-              theme === "light"
+              mounted && resolvedTheme === "light"
                 ? "border-sky-500 bg-sky-50/50 text-sky-750 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
-                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950"
+                : "border-zinc-200 bg-white text-zinc-650 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
             }`}
           >
             <Sun className="h-4 w-4" /> Light Mode
           </button>
           <button
             onClick={() => setTheme("dark")}
+            disabled={!mounted}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
-              theme === "dark"
+              mounted && resolvedTheme === "dark"
                 ? "border-sky-500 bg-sky-950/30 text-sky-300 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
-                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950"
+                : "border-zinc-200 bg-white text-zinc-650 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
             }`}
           >
             <Moon className="h-4 w-4" /> Dark Mode

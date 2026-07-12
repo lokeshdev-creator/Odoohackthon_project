@@ -1,8 +1,15 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   --background: #f8fafc;
   --foreground: #0f172a;
+  --border: #e2e8f0;
+  --chart-grid: #e2e8f0;
+  --chart-label: #64748b;
+  --chart-tooltip-bg: #ffffff;
+  --chart-tooltip-border: #e2e8f0;
 }
 
 @theme inline {
@@ -16,7 +23,36 @@
   :root {
     --background: #090d16;
     --foreground: #f8fafc;
+    --border: #1e293b;
+    --chart-grid: #1e293b;
+    --chart-label: #94a3b8;
+    --chart-tooltip-bg: #090d16;
+    --chart-tooltip-border: #1e293b;
   }
+}
+
+.dark {
+  --background: #090d16;
+  --foreground: #f8fafc;
+  --border: #1e293b;
+  --chart-grid: #1e293b;
+  --chart-label: #94a3b8;
+  --chart-tooltip-bg: #090d16;
+  --chart-tooltip-border: #1e293b;
+}
+
+/* Premium theme transition */
+.theme-transition,
+.theme-transition * {
+  transition-property: background-color, border-color, color, fill, stroke, box-shadow;
+  transition-duration: 300ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Sidebar override for transform transition */
+aside.transition-transform {
+  transition-property: transform, background-color, border-color, color !important;
+  transition-duration: 300ms;
 }
 
 body {

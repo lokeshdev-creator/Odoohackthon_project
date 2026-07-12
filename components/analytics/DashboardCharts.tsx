@@ -55,6 +55,22 @@ export function DashboardCharts({
     );
   }
 
+  const tooltipProps = {
+    contentStyle: {
+      backgroundColor: "var(--chart-tooltip-bg)",
+      borderColor: "var(--chart-tooltip-border)",
+      borderRadius: "8px",
+      color: "var(--foreground)",
+    },
+    itemStyle: {
+      color: "var(--foreground)",
+    },
+    labelStyle: {
+      color: "var(--foreground)",
+      fontWeight: "bold",
+    }
+  };
+
   return (
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* 1. Vehicle Status Pie */}
@@ -88,13 +104,7 @@ export function DashboardCharts({
                   );
                 })}
               </Pie>
-              <Tooltip
-                contentStyle={{
-                  backgroundColor: "var(--background)",
-                  borderColor: "var(--border)",
-                  borderRadius: "8px",
-                }}
-              />
+              <Tooltip {...tooltipProps} />
               <Legend verticalAlign="bottom" height={36} />
             </PieChart>
           </ResponsiveContainer>
@@ -109,10 +119,10 @@ export function DashboardCharts({
         <div className="h-64 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <LineChart data={fuelCostData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" className="dark:stroke-zinc-800" />
-              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="$" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="$" stroke="var(--chart-label)" />
+              <Tooltip {...tooltipProps} />
               <Line
                 type="monotone"
                 dataKey="amount"
@@ -134,10 +144,10 @@ export function DashboardCharts({
         <div className="h-64 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={tripsPerMonthData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" className="dark:stroke-zinc-800" />
-              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis fontSize={10} tickLine={false} axisLine={false} />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <YAxis fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <Tooltip {...tooltipProps} />
               <Bar dataKey="trips" radius={[4, 4, 0, 0]} fill="#0ea5e9" />
             </BarChart>
           </ResponsiveContainer>
@@ -152,10 +162,10 @@ export function DashboardCharts({
         <div className="h-64 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={maintenanceCostData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" className="dark:stroke-zinc-800" />
-              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="$" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="$" stroke="var(--chart-label)" />
+              <Tooltip {...tooltipProps} />
               <Bar dataKey="cost" radius={[4, 4, 0, 0]} fill="#f59e0b" />
             </BarChart>
           </ResponsiveContainer>
@@ -176,10 +186,10 @@ export function DashboardCharts({
                   <stop offset="95%" stopColor="#0ea5e9" stopOpacity={0.0}/>
                 </linearGradient>
               </defs>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" className="dark:stroke-zinc-800" />
-              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="%" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="%" stroke="var(--chart-label)" />
+              <Tooltip {...tooltipProps} />
               <Area
                 type="monotone"
                 dataKey="utilization"
@@ -201,10 +211,10 @@ export function DashboardCharts({
         <div className="h-64 mt-4">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={roiData}>
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e4e4e7" className="dark:stroke-zinc-800" />
-              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} />
-              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="%" />
-              <Tooltip />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="var(--chart-grid)" />
+              <XAxis dataKey="name" fontSize={10} tickLine={false} axisLine={false} stroke="var(--chart-label)" />
+              <YAxis fontSize={10} tickLine={false} axisLine={false} unit="%" stroke="var(--chart-label)" />
+              <Tooltip {...tooltipProps} />
               <Bar dataKey="roi" radius={[4, 4, 0, 0]} fill="#10b981" />
             </BarChart>
           </ResponsiveContainer>
