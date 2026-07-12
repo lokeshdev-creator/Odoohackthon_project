@@ -27,202 +27,264 @@ export async function GET() {
     // 2. Hash default password
     const hashedPassword = await bcrypt.hash("password123", 10);
 
-    // 3. Seed users
+    // 3. Seed users (with Indian names)
     const users = await User.create([
       {
-        name: "Alice Admin",
+        name: "Rajesh Kumar",
         email: "admin@transitops.com",
         password: hashedPassword,
         role: "Admin",
       },
       {
-        name: "Bob Fleet Manager",
+        name: "Vikram Malhotra",
         email: "manager@transitops.com",
         password: hashedPassword,
         role: "Fleet Manager",
       },
       {
-        name: "Charlie Dispatcher",
+        name: "Priya Sharma",
         email: "dispatcher@transitops.com",
         password: hashedPassword,
         role: "Dispatcher",
       },
       {
-        name: "Dave Safety Officer",
+        name: "Gurpreet Singh",
         email: "safety@transitops.com",
         password: hashedPassword,
         role: "Safety Officer",
       },
       {
-        name: "Eve Financial Analyst",
+        name: "Sunita Mehta",
         email: "finance@transitops.com",
         password: hashedPassword,
         role: "Financial Analyst",
       },
     ]);
 
-    // 4. Seed vehicles
+    // Reference dates based on Current time: 2026-07-12
+    const now = new Date();
+    const getRelativeDate = (daysAgo: number, hoursAgo: number = 0) => {
+      const date = new Date(now);
+      date.setDate(date.getDate() - daysAgo);
+      date.setHours(date.getHours() - hoursAgo);
+      return date;
+    };
+
+    // 4. Seed vehicles (Indian registration format and vehicle types)
     const vehicles = await Vehicle.create([
       {
-        registrationNumber: "NY-9872-TX",
-        name: "Heavy Duty Volvo FH16",
-        model: "Volvo FH16 2024",
+        registrationNumber: "MH-12-PQ-8821",
+        name: "Tata Signa 5530.S",
+        model: "Tata Signa 2024",
         type: "Heavy Truck",
-        capacity: 25000,
-        odometer: 142000,
-        acquisitionCost: 135000,
-        purchaseDate: new Date("2023-05-15"),
-        status: "Available",
+        capacity: 35000,
+        odometer: 120150,
+        acquisitionCost: 45000,
+        purchaseDate: new Date("2024-02-15"),
+        status: "On Trip", // Active on Trip 7
       },
       {
-        registrationNumber: "CA-1234-SF",
-        name: "Ford Transit Delivery Van",
-        model: "Ford Transit 2023",
+        registrationNumber: "DL-3C-AG-1420",
+        name: "Ashok Leyland Ecomet 1615",
+        model: "Leyland Ecomet 2023",
+        type: "Box Truck",
+        capacity: 10000,
+        odometer: 45270,
+        acquisitionCost: 28000,
+        purchaseDate: new Date("2023-09-10"),
+        status: "On Trip", // Active on Trip 6
+      },
+      {
+        registrationNumber: "KA-03-MK-7744",
+        name: "Mahindra Bolero Pickup",
+        model: "Bolero Maxi Truck 2023",
         type: "Cargo Van",
         capacity: 1500,
-        odometer: 48000,
-        acquisitionCost: 42000,
-        purchaseDate: new Date("2023-08-10"),
+        odometer: 25350,
+        acquisitionCost: 11000,
+        purchaseDate: new Date("2023-12-05"),
         status: "Available",
       },
       {
-        registrationNumber: "TX-5541-DA",
-        name: "Kenworth T680 Semi",
-        model: "Kenworth T680 2022",
-        type: "Semi Trailer",
-        capacity: 36000,
-        odometer: 285000,
-        acquisitionCost: 155000,
-        purchaseDate: new Date("2022-03-20"),
-        status: "In Shop",
+        registrationNumber: "HR-26-CN-5590",
+        name: "BharatBenz 2823R",
+        model: "BharatBenz 2823 2022",
+        type: "Heavy Truck",
+        capacity: 20000,
+        odometer: 85530,
+        acquisitionCost: 42000,
+        purchaseDate: new Date("2022-05-20"),
+        status: "In Shop", // In shop for brake overhaul
       },
       {
-        registrationNumber: "FL-8890-MI",
-        name: "Mercedes-Benz Sprinter",
-        model: "Sprinter 2500 2023",
-        type: "Cargo Van",
-        capacity: 2000,
-        odometer: 32000,
-        acquisitionCost: 48000,
-        purchaseDate: new Date("2023-11-05"),
-        status: "On Trip",
-      },
-      {
-        registrationNumber: "IL-4455-CH",
-        name: "Isuzu NPR Box Truck",
-        model: "Isuzu NPR-HD 2020",
+        registrationNumber: "MH-43-XY-1122",
+        name: "Eicher Pro 2049",
+        model: "Eicher Pro 2021",
         type: "Box Truck",
-        capacity: 6500,
-        odometer: 189000,
-        acquisitionCost: 65000,
-        purchaseDate: new Date("2020-07-18"),
-        status: "Retired",
+        capacity: 3500,
+        odometer: 60570,
+        acquisitionCost: 16000,
+        purchaseDate: new Date("2021-08-18"),
+        status: "Available",
       },
     ]);
 
-    // 5. Seed drivers
+    // 5. Seed drivers (Indian names, phone numbers and licenses)
     const drivers = await Driver.create([
       {
-        name: "John Doe",
-        phone: "+1 (555) 019-2834",
-        email: "john.doe@transitops.com",
-        licenseNumber: "DL-NY883921",
+        name: "Ramesh Yadav",
+        phone: "+91 98765 43210",
+        email: "ramesh.yadav@transitops.com",
+        licenseNumber: "DL-MH12-2020-0012345",
         licenseCategory: "Class A CDL",
-        licenseExpiry: new Date("2027-10-15"),
+        licenseExpiry: getRelativeDate(-500), // Far in the future
         safetyScore: 98,
         status: "Available",
       },
       {
-        name: "Sarah Jenkins",
-        phone: "+1 (555) 014-9988",
-        email: "sarah.j@transitops.com",
-        licenseNumber: "DL-CA112233",
+        name: "Suresh Prasad",
+        phone: "+91 87654 32109",
+        email: "suresh.prasad@transitops.com",
+        licenseNumber: "DL-DL03-2018-0987654",
         licenseCategory: "Class B CDL",
-        licenseExpiry: new Date("2028-04-20"),
-        safetyScore: 95,
+        licenseExpiry: getRelativeDate(-450),
+        safetyScore: 92,
+        status: "On Trip", // Active on Trip 6
+      },
+      {
+        name: "Gurpreet Singh",
+        phone: "+91 76543 21098",
+        email: "gurpreet.singh@transitops.com",
+        licenseNumber: "DL-HR26-2015-0123456",
+        licenseCategory: "Class A CDL",
+        licenseExpiry: getRelativeDate(-300),
+        safetyScore: 88,
+        status: "On Trip", // Active on Trip 7
+      },
+      {
+        name: "Vijay Mhatre",
+        phone: "+91 91234 56789",
+        email: "vijay.mhatre@transitops.com",
+        licenseNumber: "DL-KA03-2021-0087654",
+        licenseCategory: "Class C",
+        licenseExpiry: getRelativeDate(-600),
+        safetyScore: 90,
         status: "Available",
       },
       {
-        name: "Michael Miller",
-        phone: "+1 (555) 012-7744",
-        email: "michael.m@transitops.com",
-        licenseNumber: "DL-TX445566",
+        name: "Anil Kumble",
+        phone: "+91 90123 45678",
+        email: "anil.kumble@transitops.com",
+        licenseNumber: "DL-MH43-2012-0011223",
         licenseCategory: "Class A CDL",
-        licenseExpiry: new Date("2026-12-05"),
-        safetyScore: 88,
-        status: "On Trip",
-      },
-      {
-        name: "Robert Smith",
-        phone: "+1 (555) 017-6655",
-        email: "robert.s@transitops.com",
-        licenseNumber: "DL-FL887799",
-        licenseCategory: "Class C",
-        licenseExpiry: new Date("2023-01-10"), // Expired License
-        safetyScore: 90,
-        status: "Off Duty",
-      },
-      {
-        name: "David Lopez",
-        phone: "+1 (555) 011-2233",
-        email: "david.l@transitops.com",
-        licenseNumber: "DL-IL998877",
-        licenseCategory: "Class A CDL",
-        licenseExpiry: new Date("2027-02-14"),
+        licenseExpiry: getRelativeDate(30), // Expired 30 days ago
         safetyScore: 72,
-        status: "Suspended", // Suspended Driver
+        status: "Suspended",
       },
     ]);
 
-    // 6. Seed active/completed trips
+    // 6. Seed active/completed trips spanning the last 1 week (July 5th to July 12th)
     const trips = await Trip.create([
       {
-        source: "Los Angeles, CA",
-        destination: "San Francisco, CA",
-        vehicleId: vehicles[1]._id, // Ford Transit
-        driverId: drivers[0]._id, // John Doe
-        cargoWeight: 1200,
-        plannedDistance: 615,
-        actualDistance: 620,
-        fuelConsumed: 95,
+        source: "Mumbai, MH",
+        destination: "Pune, MH",
+        vehicleId: vehicles[0]._id, // Tata Signa
+        driverId: drivers[0]._id, // Ramesh Yadav
+        cargoWeight: 28000,
+        plannedDistance: 150,
+        actualDistance: 150,
+        fuelConsumed: 60,
+        revenue: 1200,
+        status: "Completed",
+        dispatchDate: getRelativeDate(6, 4), // 6 days ago
+        completionDate: getRelativeDate(6),
+      },
+      {
+        source: "Delhi, DL",
+        destination: "Jaipur, RJ",
+        vehicleId: vehicles[1]._id, // Ashok Leyland
+        driverId: drivers[1]._id, // Suresh Prasad
+        cargoWeight: 8500,
+        plannedDistance: 270,
+        actualDistance: 270,
+        fuelConsumed: 90,
         revenue: 1800,
         status: "Completed",
-        dispatchDate: new Date("2026-07-01T08:00:00"),
-        completionDate: new Date("2026-07-02T16:30:00"),
+        dispatchDate: getRelativeDate(5, 6), // 5 days ago
+        completionDate: getRelativeDate(5),
       },
       {
-        source: "Dallas, TX",
-        destination: "Houston, TX",
-        vehicleId: vehicles[0]._id, // Volvo Heavy Truck
-        driverId: drivers[1]._id, // Sarah Jenkins
-        cargoWeight: 18500,
-        plannedDistance: 385,
-        actualDistance: 385,
-        fuelConsumed: 140,
-        revenue: 2900,
+        source: "Bangalore, KA",
+        destination: "Chennai, TN",
+        vehicleId: vehicles[2]._id, // Mahindra Bolero
+        driverId: drivers[3]._id, // Vijay Mhatre
+        cargoWeight: 1200,
+        plannedDistance: 350,
+        actualDistance: 360,
+        fuelConsumed: 45,
+        revenue: 950,
         status: "Completed",
-        dispatchDate: new Date("2026-07-05T06:00:00"),
-        completionDate: new Date("2026-07-05T12:00:00"),
+        dispatchDate: getRelativeDate(4, 8), // 4 days ago
+        completionDate: getRelativeDate(4),
       },
       {
-        source: "New York, NY",
-        destination: "Chicago, IL",
-        vehicleId: vehicles[3]._id, // Sprinter (On Trip)
-        driverId: drivers[2]._id, // Michael Miller (On Trip)
-        cargoWeight: 1600,
-        plannedDistance: 1270,
-        revenue: 4500,
+        source: "Mumbai, MH",
+        destination: "Ahmedabad, GJ",
+        vehicleId: vehicles[3]._id, // BharatBenz
+        driverId: drivers[2]._id, // Gurpreet Singh
+        cargoWeight: 18000,
+        plannedDistance: 530,
+        actualDistance: 535,
+        fuelConsumed: 175,
+        revenue: 2800,
+        status: "Completed",
+        dispatchDate: getRelativeDate(3, 2), // 3 days ago
+        completionDate: getRelativeDate(2), // 2 days ago
+      },
+      {
+        source: "Hyderabad, TS",
+        destination: "Bangalore, KA",
+        vehicleId: vehicles[4]._id, // Eicher Pro
+        driverId: drivers[0]._id, // Ramesh Yadav
+        cargoWeight: 3000,
+        plannedDistance: 570,
+        actualDistance: 570,
+        fuelConsumed: 120,
+        revenue: 1600,
+        status: "Completed",
+        dispatchDate: getRelativeDate(2, 6), // 2 days ago
+        completionDate: getRelativeDate(1), // 1 day ago
+      },
+      {
+        source: "Delhi, DL",
+        destination: "Chandigarh, CH",
+        vehicleId: vehicles[1]._id, // Ashok Leyland (On Trip)
+        driverId: drivers[1]._id, // Suresh Prasad (On Trip)
+        cargoWeight: 7000,
+        plannedDistance: 250,
+        revenue: 1100,
         status: "Dispatched",
-        dispatchDate: new Date("2026-07-10T10:00:00"),
+        dispatchDate: getRelativeDate(1, 2), // 1 day ago
       },
       {
-        source: "Miami, FL",
-        destination: "Atlanta, GA",
-        vehicleId: vehicles[1]._id,
-        driverId: drivers[0]._id,
-        cargoWeight: 1100,
-        plannedDistance: 1060,
-        revenue: 3800,
+        source: "Mumbai, MH",
+        destination: "Pune, MH",
+        vehicleId: vehicles[0]._id, // Tata Signa (On Trip)
+        driverId: drivers[2]._id, // Gurpreet Singh (On Trip)
+        cargoWeight: 25000,
+        plannedDistance: 150,
+        revenue: 1000,
+        status: "Dispatched",
+        dispatchDate: getRelativeDate(0, 5), // 5 hours ago
+      },
+      {
+        source: "Chennai, TN",
+        destination: "Bangalore, KA",
+        vehicleId: vehicles[2]._id,
+        driverId: drivers[3]._id,
+        cargoWeight: 1400,
+        plannedDistance: 350,
+        revenue: 900,
         status: "Draft",
       },
     ]);
@@ -230,79 +292,135 @@ export async function GET() {
     // 7. Seed maintenance logs
     const maintenance = await MaintenanceLog.create([
       {
-        vehicleId: vehicles[2]._id, // Kenworth (In Shop)
-        type: "Engine Overhaul",
-        description: "Replaced cylinder head gaskets and inspected injectors.",
-        cost: 4500,
-        startDate: new Date("2026-07-08"),
-        endDate: new Date("2026-07-15"),
+        vehicleId: vehicles[3]._id, // BharatBenz (In Shop)
+        type: "Brake System Repair",
+        description: "Replaced worn out brake pads and drums, bled the brake lines.",
+        cost: 500,
+        startDate: getRelativeDate(2),
+        endDate: getRelativeDate(-2), // 2 days from now
         status: "Open",
       },
       {
-        vehicleId: vehicles[0]._id, // Volvo
-        type: "Scheduled Oil Change",
-        description: "Standard 50k mile service, replaced oil and fuel filters.",
-        cost: 350,
-        startDate: new Date("2026-06-12"),
-        endDate: new Date("2026-06-12"),
+        vehicleId: vehicles[4]._id, // Eicher Pro
+        type: "Routine Service",
+        description: "Replaced engine oil, air filter, and cabin filter.",
+        cost: 150,
+        startDate: getRelativeDate(7),
+        endDate: getRelativeDate(7),
         status: "Closed",
       },
     ]);
 
-    // 8. Seed fuel logs
+    // 8. Seed fuel logs (matching completed trips)
     const fuelLogs = await FuelLog.create([
       {
-        vehicleId: vehicles[1]._id,
-        liters: 95,
-        cost: 114,
-        odometer: 48000,
-        date: new Date("2026-07-02"),
+        vehicleId: vehicles[0]._id,
+        liters: 60,
+        cost: 72,
+        odometer: 120090,
+        date: getRelativeDate(6, 2),
       },
       {
-        vehicleId: vehicles[0]._id,
-        liters: 140,
+        vehicleId: vehicles[1]._id,
+        liters: 90,
+        cost: 108,
+        odometer: 45180,
+        date: getRelativeDate(5, 3),
+      },
+      {
+        vehicleId: vehicles[2]._id,
+        liters: 45,
+        cost: 54,
+        odometer: 25045,
+        date: getRelativeDate(4, 4),
+      },
+      {
+        vehicleId: vehicles[3]._id,
+        liters: 175,
         cost: 210,
-        odometer: 142000,
-        date: new Date("2026-07-05"),
+        odometer: 85175,
+        date: getRelativeDate(3, 1),
+      },
+      {
+        vehicleId: vehicles[4]._id,
+        liters: 120,
+        cost: 144,
+        odometer: 60120,
+        date: getRelativeDate(2, 3),
       },
     ]);
 
     // 9. Seed expenses
     await Expense.create([
       {
-        vehicleId: vehicles[1]._id,
+        vehicleId: vehicles[0]._id,
         category: "Fuel",
-        amount: 114,
-        description: "Fuel Refill: 95 Liters for trip SF-LA",
-        date: new Date("2026-07-02"),
+        amount: 72,
+        description: "Fuel Refill: 60 Liters for Trip Mumbai-Pune",
+        date: getRelativeDate(6, 2),
       },
       {
-        vehicleId: vehicles[0]._id,
+        vehicleId: vehicles[1]._id,
+        category: "Fuel",
+        amount: 108,
+        description: "Fuel Refill: 90 Liters for Trip Delhi-Jaipur",
+        date: getRelativeDate(5, 3),
+      },
+      {
+        vehicleId: vehicles[2]._id,
+        category: "Fuel",
+        amount: 54,
+        description: "Fuel Refill: 45 Liters for Trip Bangalore-Chennai",
+        date: getRelativeDate(4, 4),
+      },
+      {
+        vehicleId: vehicles[3]._id,
         category: "Fuel",
         amount: 210,
-        description: "Fuel Refill: 140 Liters for trip DL-HS",
-        date: new Date("2026-07-05"),
+        description: "Fuel Refill: 175 Liters for Trip Mumbai-Ahmedabad",
+        date: getRelativeDate(3, 1),
       },
       {
-        vehicleId: vehicles[0]._id,
-        category: "Maintenance",
-        amount: 350,
-        description: "Service: Scheduled Oil Change - Standard 50k mile service",
-        date: new Date("2026-06-12"),
+        vehicleId: vehicles[4]._id,
+        category: "Fuel",
+        amount: 144,
+        description: "Fuel Refill: 120 Liters for Trip Hyderabad-Bangalore",
+        date: getRelativeDate(2, 3),
       },
       {
-        vehicleId: vehicles[0]._id,
+        vehicleId: vehicles[3]._id,
         category: "Toll",
         amount: 45,
-        description: "Dallas Turnpike toll charges",
-        date: new Date("2026-07-05"),
+        description: "National Highway tolls (Mumbai-Ahmedabad)",
+        date: getRelativeDate(3),
       },
       {
-        vehicleId: vehicles[1]._id,
+        vehicleId: vehicles[4]._id,
+        category: "Toll",
+        amount: 35,
+        description: "Highway tolls (Hyderabad-Bangalore)",
+        date: getRelativeDate(2),
+      },
+      {
+        vehicleId: vehicles[2]._id,
         category: "Insurance",
         amount: 250,
         description: "Monthly fleet insurance premium allocation",
-        date: new Date("2026-07-01"),
+        date: getRelativeDate(7),
+      },
+      {
+        vehicleId: vehicles[3]._id,
+        category: "Repair",
+        amount: 500,
+        description: "Maintenance Service: Brake System Repair",
+        date: getRelativeDate(2),
+      },
+      {
+        vehicleId: vehicles[4]._id,
+        category: "Maintenance",
+        amount: 150,
+        description: "Service: Routine oil change and air filters",
+        date: getRelativeDate(7),
       },
     ]);
 
@@ -310,21 +428,21 @@ export async function GET() {
     await Notification.create([
       {
         type: "LicenseExpiry",
-        title: "Driver License Expired",
-        message: "Driver Robert Smith license expired on 2023-01-10. Suspension active.",
+        title: "Driver License Expired/Suspended",
+        message: "Driver Anil Kumble's license is suspended. Refrain from dispatching.",
         read: false,
       },
       {
         type: "MaintenanceReminder",
         title: "Upcoming Service Reminder",
-        message: "Vehicle CA-1234-SF is approaching 50,000 km. Schedule regular maintenance.",
+        message: "Vehicle MH-12-PQ-8821 (Tata Signa) is approaching 150,000 km. Schedule routine maintenance.",
         read: false,
       },
     ]);
 
     return NextResponse.json({
       success: true,
-      message: "Database seeded successfully!",
+      message: "Database seeded successfully with Indian fleet data!",
       seededCounts: {
         users: users.length,
         vehicles: vehicles.length,
