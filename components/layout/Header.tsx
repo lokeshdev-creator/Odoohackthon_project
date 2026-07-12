@@ -3,11 +3,15 @@
 import { useTheme } from "next-themes";
 import { usePathname } from "next/navigation";
 import { useState, useEffect } from "react";
-import { Sun, Moon, Bell, Check, Loader2 } from "lucide-react";
+import { Sun, Moon, Bell, Check, Loader2, Menu } from "lucide-react";
 import { getRecentNotifications, markAsRead, markAllAsRead } from "@/actions/notifications";
 import { GlobalSearch } from "./GlobalSearch";
 
-export function Header() {
+interface HeaderProps {
+  onMenuClick?: () => void;
+}
+
+export function Header({ onMenuClick }: HeaderProps) {
   const { theme, setTheme } = useTheme();
   const pathname = usePathname();
   const [mounted, setMounted] = useState(false);
@@ -90,7 +94,18 @@ export function Header() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-zinc-200 bg-white/85 px-6 backdrop-blur-md dark:border-zinc-800 dark:bg-zinc-900/80">
       {/* Left Path Info */}
-      <div className="flex items-center gap-1.5">{getBreadcrumbs()}</div>
+      <div className="flex items-center gap-1.5">
+        {onMenuClick && (
+          <button
+            onClick={onMenuClick}
+            className="mr-1 rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 dark:text-zinc-400 dark:hover:bg-zinc-800 md:hidden"
+            aria-label="Open sidebar"
+          >
+            <Menu className="h-5 w-5" />
+          </button>
+        )}
+        {getBreadcrumbs()}
+      </div>
 
       {/* Right Controls */}
       <div className="flex items-center gap-4">

@@ -14,11 +14,8 @@ import {
   BarChart3,
   Settings,
   LogOut,
-  Menu,
-  X,
   ShieldCheck,
 } from "lucide-react";
-import { useState } from "react";
 
 interface SidebarProps {
   user: {
@@ -26,12 +23,12 @@ interface SidebarProps {
     email?: string | null;
     role?: string | null;
   };
+  isOpen: boolean;
+  onClose: () => void;
 }
 
-export function Sidebar({ user }: SidebarProps) {
+export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const [isOpen, setIsOpen] = useState(false);
-
   const role = user.role || "Fleet Manager";
 
   // RBAC Link lists
@@ -94,26 +91,8 @@ export function Sidebar({ user }: SidebarProps) {
 
   const visibleItems = navigationItems.filter((item) => item.roles.includes(role));
 
-  const toggleSidebar = () => setIsOpen(!isOpen);
-
   return (
     <>
-      {/* Mobile Header */}
-      <div className="flex items-center justify-between border-b border-zinc-200 bg-white px-4 py-3 dark:border-zinc-800 dark:bg-zinc-900 md:hidden">
-        <div className="flex items-center gap-2">
-          <ShieldCheck className="h-6 w-6 text-zinc-900 dark:text-zinc-50" />
-          <span className="font-semibold text-zinc-900 dark:text-zinc-50 font-sans tracking-tight">
-            TransitOps
-          </span>
-        </div>
-        <button
-          onClick={toggleSidebar}
-          className="rounded-lg p-1.5 text-zinc-500 hover:bg-zinc-100 hover:text-zinc-700 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
-        >
-          {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-        </button>
-      </div>
-
       {/* Sidebar Container */}
       <aside
         className={`fixed inset-y-0 left-0 z-40 flex w-64 flex-col border-r border-zinc-200 bg-white transition-transform duration-300 dark:border-zinc-800 dark:bg-zinc-900 md:static md:translate-x-0 ${
@@ -138,7 +117,7 @@ export function Sidebar({ user }: SidebarProps) {
               <Link
                 key={item.name}
                 href={item.href}
-                onClick={() => setIsOpen(false)}
+                onClick={onClose}
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                   isActive
                     ? "bg-zinc-900 text-white dark:bg-zinc-50 dark:text-zinc-950 font-semibold"
@@ -182,10 +161,11 @@ export function Sidebar({ user }: SidebarProps) {
       {/* Backdrop overlay for mobile */}
       {isOpen && (
         <div
-          onClick={toggleSidebar}
+          onClick={onClose}
           className="fixed inset-0 z-30 bg-black/40 backdrop-blur-sm md:hidden"
         />
       )}
     </>
   );
 }
+export default Sidebar;
