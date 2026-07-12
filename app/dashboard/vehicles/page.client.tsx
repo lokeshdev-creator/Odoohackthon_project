@@ -239,25 +239,25 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
       </div>
 
       {/* Filter Section */}
-      <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
+      <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-3 sm:p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-400" />
+          <Search className="absolute top-1/2 left-3 -translate-y-1/2 h-4 w-4 text-zinc-400" />
           <input
             type="text"
-            placeholder="Search by reg number, name, or model..."
+            placeholder="Search vehicles..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
           />
         </div>
 
-        {/* Status filter */}
-        <div className="flex flex-col sm:flex-row gap-3">
+        {/* Status, Type, Region filter */}
+        <div className="grid grid-cols-3 gap-1.5 w-full sm:flex sm:w-auto sm:gap-3">
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 cursor-pointer"
           >
             <option value="All">All Statuses</option>
             <option value="Available">Available</option>
@@ -270,7 +270,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 cursor-pointer"
           >
             {vehicleTypes.map((type) => (
               <option key={type} value={type}>
@@ -283,7 +283,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={regionFilter}
             onChange={(e) => setRegionFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 sm:px-3 py-1.5 sm:py-2 text-xs sm:text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100 cursor-pointer"
           >
             <option value="All">All Regions</option>
             <option value="North">North</option>
