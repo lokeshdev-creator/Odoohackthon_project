@@ -9,6 +9,7 @@ import { Driver } from "@/models/Driver";
 import { FuelLog } from "@/models/FuelLog";
 import { Expense } from "@/models/Expense";
 import { Notification } from "@/models/Notification";
+import { auth } from "@/lib/auth";
 
 const TripInputSchema = z.object({
   id: z.string().optional(),
@@ -24,6 +25,12 @@ const TripInputSchema = z.object({
 
 export async function saveTrip(prevState: any, formData: FormData) {
   try {
+    const session = await auth();
+    const role = session?.user?.role;
+    if (role === "Driver") {
+      return { success: false, errorMessage: "Unauthorized: Drivers cannot create or edit trips." };
+    }
+
     await connectToDatabase();
 
     const rawData = {
@@ -101,11 +108,20 @@ export async function saveTrip(prevState: any, formData: FormData) {
 
 export async function dispatchTrip(tripId: string) {
   try {
+    const session = await auth();
     await connectToDatabase();
 
     const trip = await Trip.findById(tripId);
     if (!trip) {
       return { success: false, error: "Trip not found" };
+    }
+
+    const role = session?.user?.role;
+    if (role === "Driver") {
+      const driverRecord = await Driver.findOne({ email: session?.user?.email }).lean();
+      if (!driverRecord || trip.driverId.toString() !== driverRecord._id.toString()) {
+        return { success: false, error: "Unauthorized: You can only dispatch trips assigned to you." };
+      }
     }
 
     if (trip.status !== "Draft") {
@@ -164,11 +180,20 @@ export async function completeTrip(
   fuelCost: number
 ) {
   try {
+    const session = await auth();
     await connectToDatabase();
 
     const trip = await Trip.findById(tripId);
     if (!trip) {
       return { success: false, error: "Trip not found" };
+    }
+
+    const role = session?.user?.role;
+    if (role === "Driver") {
+      const driverRecord = await Driver.findOne({ email: session?.user?.email }).lean();
+      if (!driverRecord || trip.driverId.toString() !== driverRecord._id.toString()) {
+        return { success: false, error: "Unauthorized: You can only complete trips assigned to you." };
+      }
     }
 
     if (trip.status !== "Dispatched") {
@@ -243,6 +268,12 @@ export async function completeTrip(
 
 export async function cancelTrip(tripId: string) {
   try {
+    const session = await auth();
+    const role = session?.user?.role;
+    if (role === "Driver") {
+      return { success: false, error: "Unauthorized: Drivers cannot cancel trips." };
+    }
+
     await connectToDatabase();
 
     const trip = await Trip.findById(tripId);

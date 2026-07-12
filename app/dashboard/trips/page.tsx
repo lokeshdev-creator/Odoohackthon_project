@@ -8,14 +8,27 @@ import { TripsClient } from "./page.client";
 
 export default async function TripsPage() {
   const session = await auth();
-  if (!session) {
+  if (!session || !session.user) {
     redirect("/login");
   }
 
+  const role = session.user.role;
+  const email = session.user.email;
+
   await connectToDatabase();
 
+  let query = {};
+  if (role === "Driver") {
+    const driverRecord = await Driver.findOne({ email }).lean();
+    if (driverRecord) {
+      query = { driverId: driverRecord._id };
+    } else {
+      query = { _id: null };
+    }
+  }
+
   // Fetch trips populated with vehicle and driver info
-  const trips = await Trip.find({})
+  const trips = await Trip.find(query)
     .populate("vehicleId")
     .populate("driverId")
     .sort({ createdAt: -1 })
@@ -47,6 +60,7 @@ export default async function TripsPage() {
       trips={serializedTrips}
       availableVehicles={serializedVehicles}
       availableDrivers={serializedDrivers}
+      isDriver={role === "Driver"}
     />
   );
 }

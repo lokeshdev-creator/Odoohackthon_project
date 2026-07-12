@@ -10,6 +10,7 @@ import { FuelLog } from "@/models/FuelLog";
 import { AlertCircle, ArrowUpRight, DollarSign, Fuel, ShieldAlert, TrendingUp, Truck, Users, CheckCircle, Wrench, Route } from "lucide-react";
 import { DashboardCharts } from "@/components/analytics/DashboardCharts";
 import { RegionSelector } from "@/components/analytics/RegionSelector";
+import { DriverCompleteButton } from "@/components/trips/DriverCompleteButton";
 
 interface PageProps {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
@@ -27,6 +28,147 @@ export default async function DashboardPage({ searchParams }: PageProps) {
   const hasRegion = selectedRegion !== "All";
 
   await connectToDatabase();
+
+  const userEmail = session.user.email;
+  const userRole = session.user.role;
+
+  if (userRole === "Driver") {
+    const driverDoc = await Driver.findOne({ email: userEmail }).lean();
+    if (!driverDoc) {
+      return (
+        <div className="space-y-6">
+          <div className="rounded-xl border border-amber-200 bg-amber-50 p-6 text-amber-800 dark:border-amber-950/30 dark:bg-amber-950/20 dark:text-amber-400">
+            <h1 className="text-xl font-bold">Driver Profile Not Found</h1>
+            <p className="mt-2 text-sm">
+              Your account has the "Driver" role, but no corresponding driver profile matching your email (<strong>{userEmail}</strong>) was found in the database. Please contact an administrator to complete your registration.
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    // Fetch assigned trips
+    const assignedTrips = await Trip.find({ driverId: driverDoc._id })
+      .populate("vehicleId")
+      .populate("driverId")
+      .sort({ createdAt: -1 })
+      .lean();
+
+    const activeTrip = assignedTrips.find((t) => ["Draft", "Dispatched"].includes(t.status));
+    const completedTripsCount = assignedTrips.filter((t) => t.status === "Completed").length;
+
+    const serializedActiveTrip = activeTrip ? JSON.parse(JSON.stringify(activeTrip)) : null;
+
+    return (
+      <div className="space-y-6">
+        {/* Welcome banner */}
+        <div className="relative overflow-hidden rounded-2xl border border-sky-100 bg-white p-6 shadow-[0_4px_20px_-4px_rgba(14,165,233,0.08)] dark:border-sky-950/20 dark:bg-zinc-900/40">
+          <div className="absolute -right-16 -top-16 h-36 w-36 rounded-full bg-sky-200/20 blur-2xl dark:bg-sky-500/10" />
+          <div className="absolute -left-16 -bottom-16 h-36 w-36 rounded-full bg-blue-200/15 blur-2xl dark:bg-blue-500/5" />
+          <div className="relative z-10 flex flex-col gap-1">
+            <h1 className="text-2xl font-extrabold tracking-tight text-zinc-900 dark:text-zinc-50 sm:text-3xl">
+              Hello, {driverDoc.name}!
+            </h1>
+            <p className="text-sm font-semibold text-sky-600 dark:text-sky-400">
+              Driver Portal Dashboard • {driverDoc.region || "North"} Region
+            </p>
+            <p className="mt-1 text-xs text-zinc-500 dark:text-zinc-400 max-w-lg leading-relaxed">
+              Manage your assigned trips, update odometer readings and cargo reports directly from your dashboard.
+            </p>
+          </div>
+        </div>
+
+        {/* Personalized Stats Row */}
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Safety Score
+            </span>
+            <div className="mt-3 flex items-baseline gap-2">
+              <span className={`text-3xl font-bold ${
+                driverDoc.safetyScore >= 90 ? "text-emerald-600" : driverDoc.safetyScore >= 75 ? "text-amber-600" : "text-red-600"
+              }`}>
+                {driverDoc.safetyScore}/100
+              </span>
+              <span className="text-xs text-zinc-500">Commercial Standard</span>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Total Assigned Trips
+            </span>
+            <div className="mt-3">
+              <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+                {assignedTrips.length}
+              </span>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:-translate-y-0.5 hover:shadow-md transition-all duration-300">
+            <span className="text-xs font-semibold uppercase tracking-wider text-zinc-500 dark:text-zinc-400">
+              Completed Trips
+            </span>
+            <div className="mt-3">
+              <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
+                {completedTripsCount}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        {/* Active Trip Control Center */}
+        <div className="mt-6">
+          <h2 className="text-lg font-bold tracking-tight text-zinc-900 dark:text-zinc-50 mb-4">
+            Active Trip Control Center
+          </h2>
+          {serializedActiveTrip ? (
+            <div className="rounded-xl border border-sky-100 bg-sky-50/10 p-6 dark:border-zinc-800 dark:bg-zinc-900/40">
+              <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-xs font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-sky-100 text-sky-800 dark:bg-sky-950/40 dark:text-sky-400">
+                      {serializedActiveTrip.status}
+                    </span>
+                    <span className="text-xs text-zinc-400">ID: {serializedActiveTrip._id}</span>
+                  </div>
+                  <h3 className="text-lg font-bold text-zinc-900 dark:text-zinc-50 mt-2">
+                    {serializedActiveTrip.source} &rarr; {serializedActiveTrip.destination}
+                  </h3>
+                  <p className="text-xs text-zinc-500 mt-1">
+                    Vehicle: {serializedActiveTrip.vehicleId?.name} ({serializedActiveTrip.vehicleId?.registrationNumber}) • Cargo Weight: {serializedActiveTrip.cargoWeight} kg
+                  </p>
+                </div>
+                <div>
+                  {serializedActiveTrip.status === "Draft" ? (
+                    <form action={async () => {
+                      "use server";
+                      const { dispatchTrip } = await import("@/actions/trips");
+                      await dispatchTrip(serializedActiveTrip._id);
+                    }}>
+                      <button
+                        type="submit"
+                        className="rounded-lg bg-sky-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-sky-500 shadow transition-all cursor-pointer"
+                      >
+                        Start Trip / Dispatch
+                      </button>
+                    </form>
+                  ) : (
+                    <DriverCompleteButton trip={serializedActiveTrip} />
+                  )}
+                </div>
+              </div>
+            </div>
+          ) : (
+            <div className="rounded-xl border border-dashed border-zinc-300 p-8 text-center text-zinc-500 dark:border-zinc-800 dark:text-zinc-400">
+              <p className="text-sm font-medium">No active trips assigned currently.</p>
+              <p className="text-xs mt-1">Check back later or contact your dispatcher for route assignments.</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   const vehicleQuery: any = { isDeleted: false };
   const driverQuery: any = {};

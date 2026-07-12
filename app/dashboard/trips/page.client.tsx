@@ -39,9 +39,10 @@ interface TripsClientProps {
   trips: Trip[];
   availableVehicles: Vehicle[];
   availableDrivers: Driver[];
+  isDriver?: boolean;
 }
 
-export function TripsClient({ trips, availableVehicles, availableDrivers }: TripsClientProps) {
+export function TripsClient({ trips, availableVehicles, availableDrivers, isDriver = false }: TripsClientProps) {
   const [isPending, startTransition] = useTransition();
 
   // Filter & Search
@@ -242,12 +243,14 @@ export function TripsClient({ trips, availableVehicles, availableDrivers }: Trip
             Create drafts, dispatch shipments, record completions, and log distance/fuel metrics.
           </p>
         </div>
-        <button
-          onClick={handleOpenAdd}
-          className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
-        >
-          <Plus className="h-4 w-4" /> Create Trip Draft
-        </button>
+        {!isDriver && (
+          <button
+            onClick={handleOpenAdd}
+            className="flex items-center justify-center gap-2 rounded-lg bg-slate-900 px-4 py-2.5 text-sm font-semibold text-white transition-all hover:bg-slate-800 dark:bg-white dark:text-zinc-950 dark:hover:bg-zinc-200 shadow-sm hover:shadow-[0_2px_8px_-1px_rgba(14,165,233,0.15)] focus:outline-none focus:ring-2 focus:ring-sky-500"
+          >
+            <Plus className="h-4 w-4" /> Create Trip Draft
+          </button>
+        )}
       </div>
 
       {/* Filter Section */}
@@ -358,20 +361,24 @@ export function TripsClient({ trips, availableVehicles, availableDrivers }: Trip
                             >
                               <Play className="h-3 w-3" /> Dispatch
                             </button>
-                            <button
-                              onClick={() => handleOpenEdit(t)}
-                              className="rounded border border-zinc-200 p-1 text-zinc-500 hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
-                              title="Edit"
-                            >
-                              <Edit2 className="h-3.5 w-3.5" />
-                            </button>
-                            <button
-                              onClick={() => handleCancel(t._id)}
-                              className="rounded border border-red-200 p-1 text-red-600 hover:bg-red-50 dark:border-red-950/20"
-                              title="Cancel Draft"
-                            >
-                              <XCircle className="h-3.5 w-3.5" />
-                            </button>
+                            {!isDriver && (
+                              <>
+                                <button
+                                  onClick={() => handleOpenEdit(t)}
+                                  className="rounded border border-zinc-200 p-1 text-zinc-500 hover:bg-zinc-100 dark:border-zinc-800 dark:hover:bg-zinc-800"
+                                  title="Edit"
+                                >
+                                  <Edit2 className="h-3.5 w-3.5" />
+                                </button>
+                                <button
+                                  onClick={() => handleCancel(t._id)}
+                                  className="rounded border border-red-200 p-1 text-red-600 hover:bg-red-50 dark:border-red-950/20"
+                                  title="Cancel Draft"
+                                >
+                                  <XCircle className="h-3.5 w-3.5" />
+                                </button>
+                              </>
+                            )}
                           </>
                         )}
                         {t.status === "Dispatched" && (
@@ -383,13 +390,15 @@ export function TripsClient({ trips, availableVehicles, availableDrivers }: Trip
                             >
                               <CheckSquare className="h-3 w-3" /> Complete
                             </button>
-                            <button
-                              onClick={() => handleCancel(t._id)}
-                              className="rounded border border-red-200 p-1 text-red-600 hover:bg-red-50 dark:border-red-950/20"
-                              title="Cancel Dispatched"
-                            >
-                              <XCircle className="h-3.5 w-3.5" />
-                            </button>
+                            {!isDriver && (
+                              <button
+                                onClick={() => handleCancel(t._id)}
+                                className="rounded border border-red-200 p-1 text-red-600 hover:bg-red-50 dark:border-red-950/20"
+                                title="Cancel Dispatched"
+                              >
+                                <XCircle className="h-3.5 w-3.5" />
+                              </button>
+                            )}
                           </>
                         )}
                       </div>
