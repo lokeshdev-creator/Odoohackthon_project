@@ -79,7 +79,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
 
           <div className="grid grid-cols-3 gap-2 py-2 border-b border-zinc-100 dark:border-zinc-800">
             <span className="font-medium text-zinc-500">Email Address</span>
-            <span className="col-span-2 text-zinc-900 dark:text-zinc-550">{user.email}</span>
+            <span className="col-span-2 text-zinc-900 dark:text-zinc-500">{user.email}</span>
           </div>
 
           <div className="grid grid-cols-3 gap-2 py-2">
@@ -112,8 +112,8 @@ export function SettingsClient({ user }: SettingsClientProps) {
             disabled={!mounted}
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
               mounted && resolvedTheme === "light"
-                ? "border-sky-500 bg-sky-50/50 text-sky-750 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
-                : "border-zinc-200 bg-white text-zinc-650 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
+                ? "border-sky-500 bg-sky-50/50 text-sky-700 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
+                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
             }`}
           >
             <Sun className="h-4 w-4" /> Light Mode
@@ -124,7 +124,7 @@ export function SettingsClient({ user }: SettingsClientProps) {
             className={`flex flex-1 items-center justify-center gap-2 rounded-lg border py-2.5 text-sm font-semibold transition-all ${
               mounted && resolvedTheme === "dark"
                 ? "border-sky-500 bg-sky-950/30 text-sky-300 dark:border-sky-500 dark:bg-sky-950/20 dark:text-sky-300"
-                : "border-zinc-200 bg-white text-zinc-650 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
+                : "border-zinc-200 bg-white text-zinc-600 hover:border-sky-200 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400"
             }`}
           >
             <Moon className="h-4 w-4" /> Dark Mode

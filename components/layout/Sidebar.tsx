@@ -123,7 +123,7 @@ export function Sidebar({ user, isOpen, onClose }: SidebarProps) {
                 className={`flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-all ${
                   isActive
                     ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300 font-semibold"
-                    : "text-zinc-600 hover:bg-sky-50/30 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-150"
+                    : "text-zinc-600 hover:bg-sky-50/30 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800 dark:hover:text-zinc-100"
                 }`}
               >
                 <Icon className={`h-4 w-4 ${isActive ? "text-sky-600 dark:text-sky-400" : "text-zinc-400 dark:text-zinc-500"}`} />

@@ -107,7 +107,7 @@ export default function LoginPage() {
                 required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-550 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
+                className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-500 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
                 placeholder="you@company.com"
               />
             </div>
@@ -121,7 +121,7 @@ export default function LoginPage() {
                 required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-550 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
+                className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-500 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
                 placeholder="••••••••"
               />
             </div>
@@ -152,7 +152,7 @@ export default function LoginPage() {
               <button
                 key={account.email}
                 onClick={() => handleAutofill(account.email)}
-                className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 py-1.5 text-left text-zinc-650 hover:border-sky-350 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-450 dark:hover:bg-zinc-900 transition-all cursor-pointer"
+                className="rounded-lg border border-zinc-200 bg-zinc-50 px-2 py-1.5 text-left text-zinc-600 hover:border-sky-300 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-400 dark:hover:bg-zinc-900 transition-all cursor-pointer"
               >
                 <div className="font-semibold text-zinc-800 dark:text-zinc-200">
                   {account.label}

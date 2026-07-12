@@ -223,7 +223,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             <span className="text-3xl font-bold text-zinc-900 dark:text-zinc-50">
               {activeVehicles}
             </span>
-            <span className="text-xs text-zinc-550">/ {totalActiveFleet} active</span>
+            <span className="text-xs text-zinc-500">/ {totalActiveFleet} active</span>
           </div>
           <div className="mt-2 text-xs text-zinc-500">
             {availableVehicles} available • {vehiclesInMaintenance} in shop
@@ -248,7 +248,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
               <ArrowUpRight className="h-3 w-3 mr-0.5" /> Optimal
             </span>
           </div>
-          <div className="mt-2 text-xs text-zinc-550">
+          <div className="mt-2 text-xs text-zinc-500">
             {driversOnDuty} drivers currently on duty
           </div>
         </div>
@@ -269,7 +269,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </span>
             <span className="text-xs text-zinc-500">km / Liter</span>
           </div>
-          <div className="mt-2 text-xs text-zinc-550">
+          <div className="mt-2 text-xs text-zinc-500">
             Across {completedTrips.length} completed trips
           </div>
         </div>
@@ -290,7 +290,7 @@ export default async function DashboardPage({ searchParams }: PageProps) {
             </span>
             <span className="text-xs text-zinc-500">USD</span>
           </div>
-          <div className="mt-2 text-xs text-zinc-550">
+          <div className="mt-2 text-xs text-zinc-500">
             Total Operational: ${operationalCost.toLocaleString()}
           </div>
         </div>

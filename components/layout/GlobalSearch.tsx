@@ -137,7 +137,7 @@ export function GlobalSearch({ onClose }: GlobalSearchProps) {
               setIsOpen(false);
               onClose?.();
             }}
-            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-650 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
+            className="rounded p-1 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-600 dark:hover:bg-zinc-800 dark:hover:text-zinc-200"
           >
             <X className="h-4 w-4" />
           </button>

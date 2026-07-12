@@ -75,7 +75,7 @@ export function DashboardCharts({
     <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
       {/* 1. Vehicle Status Pie */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Vehicle Fleet Distribution
         </h3>
         <div className="h-64 mt-4">
@@ -113,7 +113,7 @@ export function DashboardCharts({
 
       {/* 2. Fuel Cost Line Chart */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Daily Fuel Spend (Last 30 Days)
         </h3>
         <div className="h-64 mt-4">
@@ -138,7 +138,7 @@ export function DashboardCharts({
 
       {/* 3. Trips Per Month */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Monthly Dispatched Trips
         </h3>
         <div className="h-64 mt-4">
@@ -156,7 +156,7 @@ export function DashboardCharts({
 
       {/* 4. Maintenance Cost */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Maintenance Cost by Vehicle Type
         </h3>
         <div className="h-64 mt-4">
@@ -174,7 +174,7 @@ export function DashboardCharts({
 
       {/* 5. Fleet Utilization Area */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Utilization % by Vehicle Type
         </h3>
         <div className="h-64 mt-4">
@@ -205,7 +205,7 @@ export function DashboardCharts({
 
       {/* 6. Vehicle ROI */}
       <div className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 hover:shadow-md transition-all duration-300">
-        <h3 className="text-sm font-semibold text-zinc-550 dark:text-zinc-400">
+        <h3 className="text-sm font-semibold text-zinc-500 dark:text-zinc-400">
           Return on Investment (ROI) by Top Vehicles
         </h3>
         <div className="h-64 mt-4">

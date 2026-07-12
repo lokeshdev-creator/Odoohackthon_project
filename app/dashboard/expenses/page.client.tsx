@@ -97,13 +97,13 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
       case "Maintenance":
         return "bg-blue-50 text-blue-700 border-blue-250 dark:bg-blue-950/20 dark:text-blue-400";
       case "Toll":
-        return "bg-zinc-100 text-zinc-700 border-zinc-250 dark:bg-zinc-800 dark:text-zinc-200";
+        return "bg-zinc-100 text-zinc-700 border-zinc-200 dark:bg-zinc-800 dark:text-zinc-200";
       case "Repair":
-        return "bg-red-50 text-red-700 border-red-250 dark:bg-red-950/20 dark:text-red-400";
+        return "bg-red-50 text-red-700 border-red-200 dark:bg-red-950/20 dark:text-red-400";
       case "Insurance":
-        return "bg-indigo-50 text-indigo-700 border-indigo-250 dark:bg-indigo-950/20 dark:text-indigo-400";
+        return "bg-indigo-50 text-indigo-700 border-indigo-200 dark:bg-indigo-950/20 dark:text-indigo-400";
       default:
-        return "bg-zinc-50 text-zinc-700 border-zinc-250 dark:bg-zinc-950/20 dark:text-zinc-400";
+        return "bg-zinc-50 text-zinc-700 border-zinc-200 dark:bg-zinc-950/20 dark:text-zinc-400";
     }
   };
 
@@ -145,13 +145,13 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
       <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-455" />
+          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-400" />
           <input
             type="text"
             placeholder="Search by description or vehicle registration..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-205 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
+            className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
           />
         </div>
 
@@ -160,7 +160,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
           <select
             value={categoryFilter}
             onChange={(e) => setCategoryFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-750 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             <option value="All">All Categories</option>
             <option value="Fuel">Fuel</option>
@@ -175,7 +175,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
           <select
             value={vehicleFilter}
             onChange={(e) => setVehicleFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-755 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             <option value="All">All Vehicles</option>
             {vehicles.map((v) => (
@@ -241,7 +241,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
                         {exp.category}
                       </span>
                     </td>
-                    <td className="px-6 py-4 text-zinc-650 dark:text-zinc-400">{exp.description}</td>
+                    <td className="px-6 py-4 text-zinc-600 dark:text-zinc-400">{exp.description}</td>
                     <td className="whitespace-nowrap px-6 py-4 font-bold text-zinc-900 dark:text-zinc-50">
                       ${exp.amount.toLocaleString()}
                     </td>
@@ -280,7 +280,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
                     value={vehicleId}
                     required
                     onChange={(e) => setVehicleId(e.target.value)}
-                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350"
+                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
                   >
                     {vehicles.length === 0 ? (
                       <option value="">No vehicles registered</option>
@@ -302,7 +302,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
                   <select
                     value={category}
                     onChange={(e: any) => setCategory(e.target.value)}
-                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350"
+                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
                   >
                     <option value="Fuel">Fuel (Auto Refuels should be logged via Fuel Logs)</option>
                     <option value="Maintenance">Maintenance</option>
@@ -362,7 +362,7 @@ export function ExpensesClient({ expenses, vehicles }: ExpensesClientProps) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800 transition-all"
+                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
                 >
                   Cancel
                 </button>

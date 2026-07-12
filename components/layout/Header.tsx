@@ -152,7 +152,7 @@ export function Header({ onMenuClick }: HeaderProps) {
                     <button
                       onClick={handleMarkAllAsRead}
                       disabled={loadingNotifications}
-                      className="flex items-center text-xs font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-350"
+                      className="flex items-center text-xs font-semibold text-sky-600 hover:text-sky-700 dark:text-sky-400 dark:hover:text-sky-300"
                     >
                       {loadingNotifications ? (
                         <Loader2 className="h-3 w-3 animate-spin mr-1" />

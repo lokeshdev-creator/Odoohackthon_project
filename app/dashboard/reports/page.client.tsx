@@ -232,7 +232,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "utilization"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
-                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
             <Table className={`h-4 w-4 ${selectedReport === "utilization" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Fleet Utilization
@@ -243,7 +243,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "roi"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
-                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
             <Table className={`h-4 w-4 ${selectedReport === "roi" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Operational Cost & ROI
@@ -254,7 +254,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "efficiency"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
-                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
             <Table className={`h-4 w-4 ${selectedReport === "efficiency" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Fuel Efficiency
@@ -265,7 +265,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
             className={`flex items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-semibold transition-all ${
               selectedReport === "maintenance"
                 ? "bg-sky-50 text-sky-700 dark:bg-sky-950/20 dark:text-sky-300"
-                : "text-zinc-650 hover:bg-sky-50/20 hover:text-sky-650 dark:text-zinc-400 dark:hover:bg-zinc-800"
+                : "text-zinc-600 hover:bg-sky-50/20 hover:text-sky-600 dark:text-zinc-400 dark:hover:bg-zinc-800"
             }`}
           >
             <Table className={`h-4 w-4 ${selectedReport === "maintenance" ? "text-sky-600 dark:text-sky-400" : "text-zinc-405"}`} /> Maintenance Summary
@@ -290,7 +290,7 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
                 onClick={handleExportPDF}
                 className="flex items-center gap-1.5 rounded-lg border border-zinc-200 bg-white px-3 py-1.5 text-xs font-semibold text-zinc-700 hover:border-red-350 hover:bg-red-50/20 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-900 transition-all"
               >
-                <FileText className="h-4 w-4 text-red-550 dark:text-red-400" /> Export PDF
+                <FileText className="h-4 w-4 text-red-500 dark:text-red-400" /> Export PDF
               </button>
             </div>
           </div>
@@ -328,8 +328,8 @@ export function ReportsClient({ vehicles, trips, maintenance, expenses }: Report
                               key={h}
                               className={`whitespace-nowrap px-6 py-4 ${
                                 h === "Registration Number" || h === "Vehicle"
-                                  ? "font-bold text-zinc-900 dark:text-zinc-150"
-                                  : "text-zinc-650 dark:text-zinc-400"
+                                  ? "font-bold text-zinc-900 dark:text-zinc-100"
+                                  : "text-zinc-600 dark:text-zinc-400"
                               }`}
                             >
                               {typeof val === "number" && h.includes("$")

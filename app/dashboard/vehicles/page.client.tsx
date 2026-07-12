@@ -144,7 +144,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
       case "In Shop":
         return "bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-950/20 dark:text-amber-400 dark:border-amber-800/30";
       case "Retired":
-        return "bg-zinc-100 text-zinc-650 border-zinc-200 dark:bg-zinc-800/20 dark:text-zinc-400 dark:border-zinc-700/30";
+        return "bg-zinc-100 text-zinc-600 border-zinc-200 dark:bg-zinc-800/20 dark:text-zinc-400 dark:border-zinc-700/30";
       default:
         return "bg-zinc-100 text-zinc-700";
     }
@@ -174,13 +174,13 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
       <div className="flex flex-col gap-3 rounded-xl border border-zinc-200 bg-white p-4 shadow-sm dark:border-zinc-800 dark:bg-zinc-900 sm:flex-row sm:items-center">
         {/* Search */}
         <div className="relative flex-1">
-          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-450" />
+          <Search className="absolute top-2.5 left-3 h-4 w-4 text-zinc-400" />
           <input
             type="text"
             placeholder="Search by reg number, name, or model..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full rounded-lg border border-zinc-205 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-450 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
+            className="w-full rounded-lg border border-zinc-200 bg-zinc-50 py-2 pr-4 pl-9 text-sm text-zinc-900 placeholder-zinc-400 outline-none transition-all focus:border-sky-500 focus:bg-white focus:ring-2 focus:ring-sky-100 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50 dark:focus:border-sky-500 dark:focus:ring-sky-950/20"
           />
         </div>
 
@@ -189,7 +189,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-750 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             <option value="All">All Statuses</option>
             <option value="Available">Available</option>
@@ -202,7 +202,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
           <select
             value={typeFilter}
             onChange={(e) => setTypeFilter(e.target.value)}
-            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-755 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
+            className="rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 focus:border-sky-500 focus:ring-2 focus:ring-sky-100"
           >
             {vehicleTypes.map((type) => (
               <option key={type} value={type}>
@@ -250,13 +250,13 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                       </div>
                       <div className="text-xs text-zinc-500">{v.model}</div>
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-zinc-650 dark:text-zinc-400">
+                    <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
                       {v.type}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-zinc-650 dark:text-zinc-400">
+                    <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
                       {v.capacity.toLocaleString()}
                     </td>
-                    <td className="whitespace-nowrap px-6 py-4 text-zinc-650 dark:text-zinc-400">
+                    <td className="whitespace-nowrap px-6 py-4 text-zinc-600 dark:text-zinc-400">
                       {v.odometer.toLocaleString()}
                     </td>
                     <td className="whitespace-nowrap px-6 py-4">
@@ -279,7 +279,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                         </button>
                         <button
                           onClick={() => handleDelete(v._id)}
-                          className="rounded-lg p-1.5 text-red-650 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20"
+                          className="rounded-lg p-1.5 text-red-600 hover:bg-red-50 dark:text-red-400 dark:hover:bg-red-950/20"
                           title="Retire/Delete"
                         >
                           <Trash2 className="h-4 w-4" />
@@ -326,7 +326,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                     className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3.5 py-2 text-sm text-zinc-900 placeholder-zinc-400 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-50"
                   />
                   {formErrors.registrationNumber && (
-                    <span className="text-xs text-red-650 flex items-center mt-1">
+                    <span className="text-xs text-red-600 flex items-center mt-1">
                       <AlertCircle className="h-3 w-3 mr-1" />
                       {formErrors.registrationNumber[0]}
                     </span>
@@ -341,7 +341,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                   <select
                     value={status}
                     onChange={(e: any) => setStatus(e.target.value)}
-                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350"
+                    className="mt-1 block w-full rounded-lg border border-zinc-200 bg-zinc-50 px-3 py-2 text-sm text-zinc-700 outline-none dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300"
                   >
                     <option value="Available">Available</option>
                     <option value="On Trip">On Trip</option>
@@ -456,7 +456,7 @@ export function VehiclesClient({ vehicles }: VehiclesClientProps) {
                 <button
                   type="button"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-350 dark:hover:bg-zinc-800 transition-all"
+                  className="rounded-lg border border-zinc-200 bg-white px-4 py-2 text-sm font-semibold text-zinc-700 hover:bg-sky-50/20 hover:text-sky-600 dark:border-zinc-800 dark:bg-zinc-950 dark:text-zinc-300 dark:hover:bg-zinc-800 transition-all"
                 >
                   Cancel
                 </button>
